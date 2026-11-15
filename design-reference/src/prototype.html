@@ -299,7 +299,9 @@
 #adm .urow,#adm .uhead{display:grid;grid-template-columns:minmax(200px,1.6fr) 110px minmax(150px,1fr) minmax(150px,1fr) 92px;gap:12px;align-items:center}
 #adm .uhead{padding:0 14px 8px;font-size:12px;color:var(--ink2)}
 #adm .urow{padding:12px 14px;border-radius:var(--r);background:var(--bg)}
-#adm .ulist{display:grid;gap:8px;max-height:560px;overflow:auto}
+#adm .ulist{display:grid;gap:8px}
+#adm .urow.hl{background:#eaf4fb}
+[hidden]{display:none!important}
 #adm .uc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-size:13.5px}
 #adm .uc b{color:var(--dk);font-size:14px}
 #adm .uc .ul{display:none;font-size:12px;color:var(--ink2)}
@@ -456,8 +458,9 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
 </section>
 
 <section class="screen" id="adm">
-  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="seg" id="adm-tabs" role="group" aria-label="Раздел админ-панели"><button data-t="an" aria-pressed="true">Аналитика</button><button data-t="pp" aria-pressed="false">Участники <span id="tab-n"></span></button></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
   <div class="wrapc">
+    <div id="view-an">
     <div class="kpis" id="C-kpis"></div>
     <div class="twocol">
       <div class="card mx"><h2><script>document.write(ic("chart-bar",18))</script>Матрица ответов</h2><div class="tiny">Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.</div>
@@ -469,11 +472,14 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
         <div class="card"><h2><script>document.write(ic("buildings",18))</script>Средний балл по филиалам</h2><div class="branch" id="C-branch"></div></div>
       </div>
     </div>
+    </div>
+    <div id="view-pp" hidden>
     <section class="card people" aria-labelledby="u-h">
-      <div class="phead"><h2 id="u-h"><script>document.write(ic("users",18))</script>Участники<span class="cnt" id="u-count"></span></h2><input class="fi sm" id="u-q" type="search" placeholder="Поиск по ФИО или логину" aria-label="Поиск участника" autocomplete="off"><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button></div>
+      <div class="phead"><h2 id="u-h"><script>document.write(ic("users",18))</script>Участники конкурса<span class="cnt" id="u-count"></span></h2><input class="fi sm" id="u-q" type="search" placeholder="Поиск по ФИО или логину" aria-label="Поиск участника" autocomplete="off"><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button></div>
       <div class="uhead" aria-hidden="true"><span>Участник</span><span>Дата рождения</span><span>ФАП № 38</span><span>ФАП № 178</span><span></span></div>
       <div class="ulist" id="u-list" role="list"></div>
     </section>
+    </div>
     <p class="demo" style="margin-top:12px">Демо-данные макета.</p>
   </div>
 </section>
@@ -588,12 +594,17 @@ function trackStart(k){if(!CUR)return;CUR.f[k]={state:"live",a:Array(NQ).fill(nu
 function trackAns(j){if(!CUR)return;const f=CUR.f[A.fap];f.state="live";f.a[A.i]={v:j,t:Math.max(1,Math.round((Date.now()-A.qs)/1000))};saveU()}
 function trackDone(){if(!CUR)return;CUR.f[A.fap].state="done";saveU()}
 
+let HL=null;
+function admTab(t){const pp=t==="pp";if(!pp)HL=null;$("#view-an").hidden=pp;$("#view-pp").hidden=!pp;$("#C-fap").hidden=pp;document.querySelectorAll("#adm-tabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===t)));if(pp)uRender()}
+document.querySelectorAll("#adm-tabs button").forEach(b=>b.onclick=()=>admTab(b.dataset.t));
 function uRender(){const q=($("#u-q").value||"").trim().toLowerCase();
- const rows=P.filter(p=>!q||(p.name+" "+p.login).toLowerCase().includes(q));
+ $("#tab-n").textContent="· "+P.length;
+ const rows=[...P].sort((a,b)=>(b.created||0)-(a.created||0)).filter(p=>!q||(p.name+" "+p.login).toLowerCase().includes(q));
  const cell=(p,f)=>{const x=p.f[f];return `<div class="uc"><span class="ul">ФАП № ${f}</span>${x.state==="none"?`<span class="st none">${ST.none}</span>`:`<span class="st ${x.state}">${ST[x.state]}</span><span class="tiny">${score(p,f)} верно · ${answered(p,f)} отв.</span>`}</div>`};
  $("#u-count").textContent=P.length;
- $("#u-list").innerHTML=rows.length?rows.map(p=>{const any=p.f["38"].state!=="none"||p.f["178"].state!=="none";return `<div class="urow" role="listitem"><div class="uc nm2"><b>${esc(p.name)}</b><span class="tiny">${esc(p.login)}</span></div><div class="uc"><span class="ul">Дата рождения</span>${dmy(p.birth)}</div>${cell(p,"38")}${cell(p,"178")}<div class="uc"><button class="btn ghost" data-id="${p.id}" style="height:36px;padding:0 14px" ${any?"":"disabled"}>Ответы</button></div></div>`}).join(""):`<p class="tiny">Никого не найдено</p>`;
- $("#u-list").querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openDrawer(P[+b.dataset.id]))}
+ $("#u-list").innerHTML=rows.length?rows.map(p=>{const any=p.f["38"].state!=="none"||p.f["178"].state!=="none";return `<div class="urow${p.id===HL?" hl":""}" role="listitem"><div class="uc nm2"><b>${esc(p.name)}</b><span class="tiny">${esc(p.login)}${p.pw!==undefined?" · добавлен в админке":""}</span></div><div class="uc"><span class="ul">Дата рождения</span>${dmy(p.birth)}</div>${cell(p,"38")}${cell(p,"178")}<div class="uc"><button class="btn ghost" data-id="${p.id}" style="height:36px;padding:0 14px" ${any?"":"disabled"}>Ответы</button></div></div>`}).join(""):`<p class="tiny">Никого не найдено</p>`;
+ $("#u-list").querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openDrawer(P[+b.dataset.id]));
+ const hl=$("#u-list .hl");if(hl&&!$("#view-pp").hidden)hl.scrollIntoView({block:"nearest"})}
 $("#u-q").oninput=uRender;
 document.querySelectorAll(".js-add").forEach(b=>b.onclick=openAdd);
 
@@ -626,7 +637,7 @@ function bindAdd(){const form=$("#addForm");
   if(bad){$("#"+bad).focus();return}
   const last=cap(v("f-last")),first=cap(v("f-first")),mid=cap(v("f-mid")),mk=()=>({state:"none",a:Array(NQ).fill(null),started:""});
   const u={id:P.length,name:[last,first,mid].filter(Boolean).join(" "),first,mid,br:"Филиал не указан",login:lg,pw,birth:b,created:Date.now(),f:{"38":mk(),"178":mk()}};
-  P.push(u);saveU();uRender();
+  P.push(u);saveU();HL=u.id;admTab("pp");
   $("#ab").innerHTML=`<div class="okbox"><div class="okic">${ic("check-circle",32)}</div><div class="dh-name" style="font-size:20px">Участник добавлен</div><p class="muted" style="margin:6px 0 0">${esc(u.name)}</p><dl class="cred"><dt>Логин</dt><dd>${esc(u.login)}</dd><dt>Пароль</dt><dd>${esc(u.pw)}</dd></dl><p class="tiny">Передайте данные участнику. В демо пароль хранится в этом браузере; в рабочей версии — только в виде хэша, и повторно он не показывается.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="o-copy">Скопировать данные</button><button class="btn ghost" id="o-more">Добавить ещё</button></div></div>`;
   $("#o-copy").onclick=()=>{const t=`${u.name}\nЛогин: ${u.login}\nПароль: ${u.pw}`,l=$("#o-copy");const ok=()=>l.textContent="Скопировано",no=()=>l.textContent="Не удалось скопировать";try{navigator.clipboard.writeText(t).then(ok,no)}catch(e){no()}};
   $("#o-more").onclick=()=>{$("#ab").innerHTML=addForm();bindAdd();$("#f-last").focus()};
