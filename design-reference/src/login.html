@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Вход — Конкурс профессионального мастерства службы ЭРТОС</title>
+<style>
+@import url("fonts.css");
+:root{
+  --brand-dark-blue:#1e2171; --brand-blue:#0075bf; --brand-light-blue:#68aee0;
+  --brand-red:#ed1c24; --brand-gray:#c8c8c8; --white:#ffffff; --ink:#000000;
+  --ink-2:#4a4a4a; --line:#d4d7e0; --bg:#f4f6fa;
+  --radius:12px; --radius-card:24px; --radius-panel:28px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:"DIN Pro",Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(420px,1fr);min-height:100vh;padding:16px;gap:16px}
+
+/* ── brand panel ── */
+.brand{position:relative;overflow:hidden;background:linear-gradient(160deg,#0075bf 0%,#1e2171 100%);border-radius:var(--radius-panel);color:var(--white);padding:48px 56px;display:flex;flex-direction:column;justify-content:space-between}
+.brand svg.radar{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.brand .org{position:relative;font-weight:500;font-size:14px;letter-spacing:.02em;opacity:.92}
+.brand .hero{position:relative;max-width:520px}
+.brand .eyebrow{font-weight:500;font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:16px}
+.brand h1{margin:0;font-weight:700;font-size:44px;line-height:1.08;text-transform:uppercase}
+.brand h1 span{display:block}
+.brand .lead{margin:20px 0 0;font-size:17px;line-height:1.5;opacity:.92;max-width:440px}
+
+/* ── form side ── */
+.side{display:flex;flex-direction:column;padding:24px 8px}
+.side main{flex:1;display:flex;align-items:center;justify-content:center}
+.card{width:100%;max-width:420px;background:var(--white);border-radius:var(--radius-card);padding:44px 40px 36px;box-shadow:0 1px 2px rgba(30,33,113,.06),0 12px 40px rgba(30,33,113,.10)}
+.logo{display:block;width:112px;height:auto;margin:0 0 24px}
+.card h2{margin:0;font-weight:700;font-size:24px;line-height:1.2;color:var(--brand-dark-blue)}
+.card .sub{margin:8px 0 28px;color:var(--ink-2);font-size:15px}
+.field{margin-bottom:18px}
+label{display:block;font-weight:500;font-size:14px;margin-bottom:6px;color:var(--ink)}
+.input{position:relative}
+input{width:100%;height:50px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:var(--white);border:1px solid #c3c8d4;border-radius:var(--radius);background:#fafbfd;outline:none;transition:border-color .15s}
+input:hover{border-color:#6f7686}
+input:focus{border-color:var(--brand-blue);background:var(--white);box-shadow:0 0 0 4px rgba(0,117,191,.18)}
+input[aria-invalid="true"]{border-color:var(--brand-red)}
+.toggle{position:absolute;right:6px;top:6px;height:38px;border-radius:8px;padding:0 10px;border:0;background:none;font:inherit;font-size:13px;font-weight:500;color:var(--brand-blue);cursor:pointer;border-radius:var(--radius)}
+.toggle:focus-visible{outline:2px solid var(--brand-dark-blue);outline-offset:1px}
+.err{display:none;margin-top:6px;font-size:13px;font-weight:500;color:#c4121a}
+.err.on{display:block}
+.btn{width:100%;height:52px;margin-top:10px;border:0;border-radius:var(--radius);background:var(--brand-blue);color:var(--white);font:inherit;font-weight:700;font-size:16px;letter-spacing:.02em;cursor:pointer;transition:background .15s,box-shadow .15s}
+.btn:hover{background:#00649f;box-shadow:0 6px 18px rgba(0,117,191,.28)}
+.btn:active{background:var(--brand-dark-blue)}
+.btn:focus-visible{outline:3px solid var(--brand-dark-blue);outline-offset:2px}
+.btn[disabled]{background:#5d9fd0;cursor:progress}
+.alert{display:none;margin:0 0 18px;padding:12px 14px;border-radius:var(--radius);font-size:14px;line-height:1.4}
+.alert.on{display:block}
+.alert.bad{background:#fdecec;color:#a30f16;border:1px solid #f4b8ba}
+.alert.ok{background:#e8f2fa;color:var(--brand-dark-blue);border:1px solid #b9d7ee}
+.help{margin:24px 0 0;padding:14px 16px;background:var(--bg);border-radius:var(--radius);font-size:13.5px;color:var(--ink-2)}
+.help b{color:var(--ink);font-weight:500}
+.side footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:420px;width:100%;margin:24px auto 0;font-size:12.5px;color:#5b6170}
+.side footer a{color:var(--brand-blue);font-weight:700;text-decoration:none;letter-spacing:.06em}
+
+
+/* ── entrance animation ── */
+@keyframes panelIn{from{opacity:0;transform:translateX(-24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes lineUp{from{transform:translateY(105%)}to{transform:none}}
+@keyframes ring{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(1);opacity:.9}100%{transform:scale(7);opacity:0}}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+.anim .brand{animation:panelIn .9s cubic-bezier(.2,.8,.2,1) both}
+.anim .radar .ax{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.2s .35s cubic-bezier(.6,0,.2,1) forwards}
+.anim .radar .rg{transform-box:view-box;transform-origin:600px 340px;animation:ring 1s cubic-bezier(.2,.8,.2,1) both}
+.anim .radar .rg:nth-child(3){animation-delay:.45s}.anim .radar .rg:nth-child(4){animation-delay:.6s}
+.anim .radar .rg:nth-child(5){animation-delay:.75s}.anim .radar .rg:nth-child(6){animation-delay:.9s}
+.radar .sw{transform-box:view-box;transform-origin:600px 340px;animation:sweep 9s linear infinite}
+.anim .radar .swwrap{animation:rise 1s 1s both}
+.radar .ping{transform-box:fill-box;transform-origin:center;animation:ping 2.4s 1.4s ease-out infinite}
+.anim .org{animation:rise .7s .3s both}
+.anim .eyebrow{animation:rise .7s .45s both}
+.brand h1 span{overflow:hidden}
+.brand h1 span i{display:block;font-style:normal}
+.anim .brand h1 span i{animation:lineUp .8s cubic-bezier(.2,.8,.2,1) both}
+.anim .brand h1 span:nth-child(1) i{animation-delay:.55s}.anim .brand h1 span:nth-child(2) i{animation-delay:.65s}
+.anim .brand h1 span:nth-child(3) i{animation-delay:.75s}.anim .brand h1 span:nth-child(4) i{animation-delay:.85s}
+.anim .lead{animation:rise .8s 1.05s both}
+.anim .card{animation:cardIn .9s .35s cubic-bezier(.2,.8,.2,1) both}
+.anim .card > *{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+.anim .card > :nth-child(1){animation-delay:.6s}.anim .card > :nth-child(2){animation-delay:.68s}
+.anim .card > :nth-child(3){animation-delay:.76s}.anim .card > :nth-child(5){animation-delay:.84s}
+.anim .card > :nth-child(6){animation-delay:.92s}.anim .card > :nth-child(7){animation-delay:1s}
+.anim .card > :nth-child(8){animation-delay:1.08s}
+.anim .side footer{animation:rise .7s 1.2s both}
+
+/* ── air route map ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+.anim .airmap .grat,.anim .airmap .gratlbl{animation:fadeIn 1.4s .3s both}
+.routes path{stroke-dasharray:1;stroke-dashoffset:0}
+.anim .routes path{stroke-dashoffset:1;animation:draw 1.1s cubic-bezier(.6,0,.2,1) forwards;animation-delay:calc(.9s + var(--i)*70ms)}
+.apt{transform-box:fill-box;transform-origin:center}
+.anim .apt{animation:pop .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.8s + var(--i)*60ms)}
+.anim .blips{animation:fadeIn 1s 2s both}
+@media (prefers-reduced-motion:reduce){.routes path{stroke-dashoffset:0!important}.blips{display:none}}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .radar .ax{stroke-dashoffset:0!important}
+}
+
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr;padding:12px;gap:12px}
+  .brand{padding:28px 20px 32px;min-height:auto;border-radius:22px}
+  .brand .hero{margin-top:36px}
+  .brand h1{font-size:28px}
+  .brand .lead{font-size:15px;margin-top:12px}
+  .side{padding:4px 0 12px}
+  .card{padding:28px 20px 24px;border-radius:20px}
+}
+</style>
+</head>
+<body class="anim">
+<div class="wrap">
+  <section class="brand" aria-label="О конкурсе">
+    <svg class="radar" viewBox="0 0 800 900" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+      <g class="airmap" aria-hidden="true">
+      <g class="grat" stroke="#ffffff" stroke-opacity=".10" stroke-width="1" stroke-dasharray="2 6">
+      <line x1="-200" y1="1011.2" x2="1200" y2="1011.2"/>
+      <line x1="-200" y1="879.2" x2="1200" y2="879.2"/>
+      <line x1="-200" y1="747.2" x2="1200" y2="747.2"/>
+      <line x1="-200" y1="615.2" x2="1200" y2="615.2"/>
+      <line x1="-200" y1="483.2" x2="1200" y2="483.2"/>
+      <line x1="-200" y1="351.2" x2="1200" y2="351.2"/>
+      <line x1="-200" y1="219.2" x2="1200" y2="219.2"/>
+      <line x1="-200" y1="87.2" x2="1200" y2="87.2"/>
+      <line x1="-200" y1="-44.8" x2="1200" y2="-44.8"/>
+      <line x1="-200" y1="-176.8" x2="1200" y2="-176.8"/>
+      <line x1="-156.2" y1="-100" x2="-156.2" y2="1000"/>
+      <line x1="-8.6" y1="-100" x2="-8.6" y2="1000"/>
+      <line x1="139.0" y1="-100" x2="139.0" y2="1000"/>
+      <line x1="286.7" y1="-100" x2="286.7" y2="1000"/>
+      <line x1="434.3" y1="-100" x2="434.3" y2="1000"/>
+      <line x1="581.9" y1="-100" x2="581.9" y2="1000"/>
+      <line x1="729.5" y1="-100" x2="729.5" y2="1000"/>
+      <line x1="877.2" y1="-100" x2="877.2" y2="1000"/>
+      <line x1="1024.8" y1="-100" x2="1024.8" y2="1000"/>
+      <line x1="1172.4" y1="-100" x2="1172.4" y2="1000"/>
+      </g><g class="gratlbl" fill="#ffffff" fill-opacity=".35" font-size="11" font-weight="500" letter-spacing=".04em">
+      <text x="792" y="610.2" text-anchor="end">52°N</text>
+      <text x="792" y="478.2" text-anchor="end">54°N</text>
+      <text x="792" y="346.2" text-anchor="end">56°N</text>
+      <text x="792" y="214.2" text-anchor="end">58°N</text>
+      <text x="792" y="82.2" text-anchor="end">60°N</text>
+      <text x="291.7" y="890">84°E</text>
+      <text x="439.3" y="890">88°E</text>
+      <text x="586.9" y="890">92°E</text>
+      <text x="734.5" y="890">96°E</text>
+      </g>
+      <g class="routes" fill="none" stroke="#68aee0" stroke-opacity=".55" stroke-width="1.2">
+      <path id="rt-UNKL-UNNT" pathLength="1" style="--i:0" d="M600.0 340.0 L236.8 416.6"/>
+      <path id="rt-UNKL-UNTT" pathLength="1" style="--i:1" d="M600.0 340.0 L331.3 326.1"/>
+      <path id="rt-UNKL-UNEE" pathLength="1" style="--i:2" d="M600.0 340.0 L364.5 399.4"/>
+      <path id="rt-UNKL-UNAA" pathLength="1" style="--i:3" d="M600.0 340.0 L559.4 500.4"/>
+      <path id="rt-UNKL-UNKY" pathLength="1" style="--i:4" d="M600.0 340.0 L670.5 637.0"/>
+      <path id="rt-UNKL-UNII" pathLength="1" style="--i:5" d="M600.0 340.0 L586.0 188.2"/>
+      <path id="rt-UNKL-UIBB" pathLength="1" style="--i:6" d="M600.0 340.0 L939.9 326.8"/>
+      <path id="rt-UNKL-UIII" pathLength="1" style="--i:7" d="M600.0 340.0 L1039.2 597.4"/>
+      <path id="rt-UNNT-UNTT" pathLength="1" style="--i:8" d="M236.8 416.6 L331.3 326.1"/>
+      <path id="rt-UNNT-UNBB" pathLength="1" style="--i:9" d="M236.8 416.6 L269.7 525.5"/>
+      <path id="rt-UNEE-UNWW" pathLength="1" style="--i:10" d="M364.5 399.4 L393.0 495.8"/>
+      <path id="rt-UNWW-UNAA" pathLength="1" style="--i:11" d="M393.0 495.8 L559.4 500.4"/>
+      <path id="rt-UNTT-UNII" pathLength="1" style="--i:12" d="M331.3 326.1 L586.0 188.2"/>
+      <path id="rt-UNNT-UNEE" pathLength="1" style="--i:13" d="M236.8 416.6 L364.5 399.4"/>
+      </g><g class="blips" fill="#ffffff">
+      <circle r="2.6"><animateMotion dur="14s" begin="2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNNT"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="17s" begin="3.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UIBB"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="11s" begin="5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNII"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="12s" begin="6s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNAA"/></animateMotion></circle>
+      </g><g class="apts">
+      <g class="apt main" style="--i:0"><text x="614.0" y="328.0" fill="#ffffff" font-size="14" font-weight="700" letter-spacing=".12em">UNKL</text></g>
+      <g class="apt" style="--i:1"><circle cx="236.8" cy="416.6" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="227.8" y="432.6" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNNT</text></g>
+      <g class="apt" style="--i:2"><circle cx="331.3" cy="326.1" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="341.3" y="319.1" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNTT</text></g>
+      <g class="apt" style="--i:3"><circle cx="364.5" cy="399.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="374.5" y="392.4" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNEE</text></g>
+      <g class="apt" style="--i:4"><circle cx="559.4" cy="500.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="569.4" y="493.4" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNAA</text></g>
+      <g class="apt" style="--i:5"><circle cx="670.5" cy="637.0" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="680.5" y="630.0" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNKY</text></g>
+      <g class="apt" style="--i:6"><circle cx="586.0" cy="188.2" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="596.0" y="181.2" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNII</text></g>
+      <g class="apt" style="--i:7"><circle cx="939.9" cy="326.8" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="929.9" y="319.8" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UIBB</text></g>
+      <g class="apt" style="--i:8"><circle cx="1039.2" cy="597.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="1029.2" y="590.4" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UIII</text></g>
+      <g class="apt" style="--i:9"><circle cx="269.7" cy="525.5" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="279.7" y="518.5" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNBB</text></g>
+      <g class="apt" style="--i:10"><circle cx="393.0" cy="495.8" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="403.0" y="488.8" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNWW</text></g>
+      </g></g>
+      <g fill="none" stroke="#ffffff">
+        <line class="ax" pathLength="1" x1="0" y1="340" x2="800" y2="340" stroke-opacity=".35" stroke-width="1"/>
+        <line class="ax" pathLength="1" x1="600" y1="0" x2="600" y2="900" stroke-opacity=".35" stroke-width="1"/>
+        <circle class="rg" cx="600" cy="340" r="110" stroke-opacity=".28" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="220" stroke-opacity=".22" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="330" stroke-opacity=".16" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="440" stroke-opacity=".11" stroke-width="1.5"/>
+      </g>
+      <g class="swwrap"><path class="sw" d="M600 340 L600 -100 A440 440 0 0 1 981 120 Z" fill="#68aee0" fill-opacity=".16"/></g>
+      <circle class="ping" cx="600" cy="340" r="5" fill="none" stroke="#ffffff" stroke-width="1"/><circle cx="600" cy="340" r="5" fill="#ffffff"/>
+    </svg>
+    <div class="org">ФГУП «Госкорпорация по ОрВД»</div>
+    <div class="hero">
+      <div class="eyebrow">Тестирование участников</div>
+      <h1><span><i>Конкурс</i></span><span><i>профессионального</i></span><span><i>мастерства</i></span><span><i>службы ЭРТОС</i></span></h1>
+      <p class="lead">Войдите под своей учётной записью участника, чтобы пройти тестирование.</p>
+    </div>
+  </section>
+
+  <div class="side">
+    <main>
+      <form class="card" id="form" novalidate>
+        <img class="logo" src="../../design/logos/emblem-ru.svg" alt="Госкорпорация по ОрВД">
+        <h2>Вход в систему тестирования</h2>
+        <p class="sub">Используйте логин и пароль, выданные организатором конкурса.</p>
+
+        <div class="alert bad" id="alert" role="alert"></div>
+
+        <div class="field">
+          <label for="login">Логин</label>
+          <div class="input"><input id="login" name="login" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ваш логин" aria-describedby="login-err"></div>
+          <div class="err" id="login-err">Введите логин</div>
+        </div>
+
+        <div class="field">
+          <label for="password">Пароль</label>
+          <div class="input">
+            <input id="password" name="password" type="password" autocomplete="current-password" aria-describedby="password-err" style="padding-right:84px">
+            <button class="toggle" type="button" id="toggle" aria-controls="password" aria-pressed="false">Показать</button>
+          </div>
+          <div class="err" id="password-err">Введите пароль</div>
+        </div>
+
+        <button class="btn" type="submit" id="submit">Войти</button>
+
+        <p class="help"><b>Нет логина или не получается войти?</b><br>Обратитесь к организатору конкурса в вашем филиале.</p>
+      </form>
+    </main>
+    <footer>
+      <span>© ФГУП «Госкорпорация по ОрВД»</span>
+      <a href="https://gkovd.ru" target="_blank" rel="noopener">GKOVD.RU</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var form=document.getElementById('form'), login=document.getElementById('login'), pass=document.getElementById('password'),
+      toggle=document.getElementById('toggle'), alertBox=document.getElementById('alert'), btn=document.getElementById('submit');
+  function setErr(input,on){input.setAttribute('aria-invalid',on?'true':'false');document.getElementById(input.id+'-err').classList.toggle('on',on)}
+  [login,pass].forEach(function(i){i.addEventListener('input',function(){if(i.value.trim())setErr(i,false);alertBox.className='alert bad'})});
+  toggle.addEventListener('click',function(){var show=pass.type==='password';pass.type=show?'text':'password';toggle.textContent=show?'Скрыть':'Показать';toggle.setAttribute('aria-pressed',String(show))});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var l=!login.value.trim(), p=!pass.value;
+    setErr(login,l); setErr(pass,p);
+    if(l||p){(l?login:pass).focus();return}
+    btn.disabled=true; btn.textContent='Проверяем…';
+    // Макет: здесь будет запрос к серверу авторизации
+    setTimeout(function(){
+      btn.disabled=false; btn.textContent='Войти';
+      if(pass.value.length<6){alertBox.className='alert bad on';alertBox.textContent='Неверный логин или пароль. Проверьте раскладку клавиатуры и Caps Lock.'}
+      else{alertBox.className='alert ok on';alertBox.textContent='Вход выполнен (демонстрация макета). Здесь откроется страница с тестом.'}
+    },900);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Админ-панель — варианты A, B, C</title>
+<style>
+@import url("common.css");
+.seg{display:inline-flex;background:#eef2f8;border-radius:var(--r);padding:4px}
+.seg button{border:0;background:transparent;height:34px;padding:0 14px;border-radius:9px;font-weight:500;font-size:13px;color:var(--ink2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--dk);box-shadow:0 1px 3px rgba(30,33,113,.15)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.mark{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;font-size:12px;font-weight:700}
+.mark.y{background:#e3f0fa;color:var(--bl)}.mark.n{background:#fde8e9;color:var(--bad)}.mark.e{background:#eef0f4;color:var(--ink3)}
+.pbar{height:6px;border-radius:999px;background:#e8ecf3;overflow:hidden}.pbar i{display:block;height:100%;border-radius:999px;background:var(--bl)}
+.st{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.live{background:#e3f0fa;color:var(--bl)}.st.live::before{animation:blink 1.2s infinite}
+.st.done{background:#e9ecf6;color:var(--dk)}.st.none{background:#f0f1f4;color:var(--ink3)}
+@keyframes blink{50%{opacity:.25}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{padding:18px 20px}
+.kpi .v{font-size:32px;font-weight:700;color:var(--dk);line-height:1.1;margin-top:6px}
+.kpi .v small{font-size:15px;color:var(--ink3);font-weight:500}
+.ans-list{display:grid;gap:8px}
+.ans-row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:12px 14px;border-radius:var(--r);background:var(--bg)}
+.ans-row .qn{font-weight:700;color:var(--dk);font-size:13px;padding-top:2px}
+.ans-row .qq{font-size:13.5px;font-weight:500;color:var(--ink)}
+.ans-row .aa{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.ans-row .tm{font-size:12px;color:var(--ink3);text-align:right;white-space:nowrap}
+.scrim{position:fixed;inset:0;background:rgba(13,16,48,.35);backdrop-filter:blur(2px);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:12px;right:12px;bottom:12px;width:min(560px,calc(100% - 24px));z-index:61;background:#fff;border-radius:var(--r-card);box-shadow:0 20px 60px rgba(13,16,48,.3);transform:translateX(110%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer header{padding:22px 24px 14px;border-bottom:1px solid var(--line)}
+.drawer .body{padding:16px 24px 24px;overflow:auto}
+.drawer .x{position:absolute;right:16px;top:16px;width:36px;height:36px;border-radius:10px;border:0;background:var(--bg);font-size:18px}
+.dh-name{font-size:22px;font-weight:700;color:var(--dk)}
+.dh-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.demo{font-size:12px;color:var(--ink3)}
+
+/* ═════════ A — реестр ═════════ */
+#A .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+#A nav.side{background:var(--dk);color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+#A nav.side .logo{display:flex;align-items:center;gap:10px;padding:4px 8px 22px}
+#A nav.side .logo img{height:38px;background:#fff;border-radius:10px;padding:3px 5px}
+#A nav.side .logo b{font-size:13px;line-height:1.2}
+#A nav.side a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r);color:#c9cdf0;text-decoration:none;font-size:14px}
+#A nav.side a.on{background:rgba(255,255,255,.12);color:#fff;font-weight:500}
+#A nav.side a:hover{background:rgba(255,255,255,.08)}
+#A nav.side .foot{margin-top:auto;font-size:12px;color:#8f95c9;padding:8px 12px}
+#A main{padding:28px 32px 120px;min-width:0}
+#A h1{font-size:28px;color:var(--dk);margin:0 0 4px}
+#A .bar1{display:flex;align-items:flex-end;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+#A .bar1 .sp{flex:1}
+#A .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0 14px}
+#A .search{height:40px;border-radius:var(--r);border:1px solid var(--line2);padding:0 14px;font:inherit;width:260px;background:#fff}
+#A .search:focus{outline:none;border-color:var(--bl);box-shadow:0 0 0 4px rgba(0,117,191,.15)}
+#A .tbl{padding:6px 0;overflow:auto}
+#A table{width:100%;border-collapse:collapse;font-size:14px;min-width:820px}
+#A th{text-align:left;font-weight:500;font-size:12px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;padding:12px 16px;border-bottom:1px solid var(--line)}
+#A td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+#A tbody tr{cursor:pointer;transition:background .15s}
+#A tbody tr:hover{background:#f6f9fd}
+#A tbody tr:last-child td{border-bottom:0}
+#A .who{display:flex;align-items:center;gap:12px}
+#A .who .ava{width:36px;height:36px;border-radius:50%;background:#e3ecf8;color:var(--dk);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+#A .who small{display:block;color:var(--ink3);font-size:12.5px}
+#A .sc{display:grid;grid-template-columns:44px 90px;gap:10px;align-items:center}
+#A .sc b{color:var(--dk)}
+
+/* ═════════ B — мониторинг ═════════ */
+#B{background:var(--bg)}
+#B .hero{position:relative;overflow:hidden;margin:16px;border-radius:var(--r-panel);background:linear-gradient(150deg,#0075bf,#1e2171);color:#fff;padding:24px 28px}
+#B .hero svg.bg{position:absolute;right:-80px;top:-140px;width:520px;height:520px;opacity:.25;pointer-events:none}
+#B .hero .row{position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#B .hero img{height:38px;background:#fff;border-radius:10px;padding:3px 5px}
+#B .hero .sp{flex:1}
+#B .hero h1{position:relative;margin:22px 0 4px;font-size:30px}
+#B .hero .nums{position:relative;display:flex;gap:36px;margin-top:18px;flex-wrap:wrap}
+#B .hero .nums b{display:block;font-size:30px;line-height:1}
+#B .hero .nums span{font-size:12.5px;opacity:.8}
+#B .hero .seg{background:rgba(255,255,255,.14)}
+#B .hero .seg button{color:#dfe6ff}
+#B .hero .seg button[aria-pressed="true"]{background:#fff;color:var(--dk)}
+#B .board{display:grid;grid-template-columns:repeat(3,1fr) 300px;gap:16px;padding:0 16px 120px}
+#B .col h3{display:flex;align-items:center;gap:8px;margin:8px 4px 12px;font-size:14px;color:var(--dk)}
+#B .col h3 .n{background:#e3e9f3;border-radius:999px;padding:1px 9px;font-size:12px}
+#B .pc{padding:16px;margin-bottom:12px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+#B .pc:hover{transform:translateY(-2px);box-shadow:0 1px 2px rgba(30,33,113,.06),0 18px 40px rgba(30,33,113,.16)}
+#B .pc .nm{font-weight:700;color:var(--dk)}
+#B .pc .br{font-size:12.5px;color:var(--ink3);margin-bottom:12px}
+#B .pc .ln{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin:8px 0 5px}
+#B .pc .score{display:flex;gap:8px;margin-top:6px}
+#B .pc .score div{flex:1;background:var(--bg);border-radius:10px;padding:8px 10px;font-size:12px;color:var(--ink3)}
+#B .pc .score b{display:block;font-size:18px;color:var(--dk)}
+#B .feed{padding:18px;position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow:auto}
+#B .feed h3{margin:0 0 12px;font-size:14px;color:var(--dk)}
+#B .ev{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+#B .ev time{color:var(--ink3);font-size:12px;font-variant-numeric:tabular-nums}
+#B .ev.new{animation:rise .5s both}
+#B .tiles{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:10px 0 18px}
+#B .tiles i{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:700}
+
+/* ═════════ C — аналитика ═════════ */
+#C .topc{display:flex;align-items:center;gap:14px;padding:14px 24px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#C .topc img{height:34px}
+#C .topc .sp{flex:1}
+#C .topc b{color:var(--dk)}
+#C .wrapc{padding:24px;max-width:1440px;margin:0 auto 120px}
+#C .twocol{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-top:16px}
+#C .mx{padding:20px;overflow:auto}
+#C .mx h2,#C .side h2{margin:0 0 4px;font-size:16px;color:var(--dk)}
+#C .matrix{display:grid;gap:4px;margin-top:16px;min-width:760px}
+#C .matrix .h{font-size:11px;color:var(--ink3);text-align:center;align-self:end}
+#C .matrix .nm{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;align-self:center}
+#C .matrix .nm small{color:var(--ink3)}
+#C .cell{aspect-ratio:1;border-radius:7px;border:0;display:grid;place-items:center;font-size:11px;font-weight:700;transition:transform .1s}
+#C .cell:hover{transform:scale(1.15);z-index:2}
+#C .cell.y{background:var(--bl);color:#fff}
+#C .cell.n{background:#fde8e9;color:var(--bad);box-shadow:inset 0 0 0 1.5px #f3a7ab}
+#C .cell.e{background:#eef0f4;color:#aeb3c2}
+#C .cell.sel{outline:2.5px solid var(--dk);outline-offset:1px}
+#C .matrix .tot{font-size:13px;font-weight:700;color:var(--dk);text-align:right;align-self:center}
+#C .matrix .pct{font-size:10.5px;text-align:center;color:var(--ink2)}
+#C .legend{display:flex;gap:16px;font-size:12.5px;color:var(--ink2);margin-top:14px;flex-wrap:wrap}
+#C .legend i{display:inline-block;width:14px;height:14px;border-radius:5px;vertical-align:-2px;margin-right:6px}
+#C .side{display:grid;gap:16px;align-content:start}
+#C .side .card{padding:20px}
+#C .hard{display:grid;gap:10px;margin-top:12px}
+#C .hard div{display:grid;grid-template-columns:30px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+#C .hard b{color:var(--dk)}
+#C .branch{display:grid;gap:12px;margin-top:12px}
+#C .branch .l{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+#C .detail{margin-top:12px;font-size:13.5px}
+#C .detail .q{font-weight:500;color:var(--ink);margin:6px 0}
+
+@media (max-width:1100px){#B .board{grid-template-columns:1fr 1fr}#B .feed{grid-column:1/-1;position:static;max-height:none}#C .twocol{grid-template-columns:1fr}}
+@media (max-width:800px){
+  #A .app{grid-template-columns:1fr}#A nav.side{position:static;height:auto;flex-direction:row;overflow:auto;padding:10px}#A nav.side .logo b,#A nav.side .foot{display:none}#A nav.side .logo{padding:0 6px 0 0}#A nav.side a{white-space:nowrap}
+  #A main{padding:20px 16px 110px}.kpis{grid-template-columns:1fr 1fr}#A .search{width:100%}
+  #B .board{grid-template-columns:1fr}#B .hero{margin:12px}#B .hero h1{font-size:24px}
+  #C .wrapc{padding:16px}
+}
+</style></head>
+<body>
+
+<!-- ═════════ A ═════════ -->
+<section class="variant on" id="A"><div class="app">
+  <nav class="side">
+    <div class="logo"><img src="../../design/logos/emblem-ru.svg" alt=""><b>Конкурс ЭРТОС<br><span style="font-weight:400;opacity:.7">администратор</span></b></div>
+    <a class="on" href="#">◉ Участники</a><a href="#">▤ Тесты ФАП</a><a href="#">☰ Банк вопросов</a><a href="#">↧ Отчёты</a><a href="#">⚙ Настройки</a>
+    <div class="foot">Демо-данные макета</div>
+  </nav>
+  <main>
+    <div class="bar1"><div><div class="eyebrow tiny">Конкурс профессионального мастерства</div><h1>Участники</h1></div><div class="sp"></div><button class="btn ghost">↧ Выгрузить в Excel</button><button class="btn">+ Добавить участника</button></div>
+    <div class="kpis" id="A-kpis"></div>
+    <div class="tools"><input class="search" id="A-q" placeholder="Поиск по ФИО или филиалу"><div class="seg" id="A-st"><button data-s="all" aria-pressed="true">Все</button><button data-s="live" aria-pressed="false">Проходят</button><button data-s="done" aria-pressed="false">Завершили</button><button data-s="none" aria-pressed="false">Не начали</button></div></div>
+    <div class="card tbl"><table><thead><tr><th>Участник</th><th>ФАП № 38</th><th>ФАП № 178</th><th>Статус</th><th>Время</th></tr></thead><tbody id="A-rows"></tbody></table></div>
+    <p class="demo" style="margin-top:12px">Нажмите на строку — откроется разбор ответов по каждому вопросу.</p>
+  </main>
+</div></section>
+
+<!-- ═════════ B ═════════ -->
+<section class="variant" id="B">
+  <div class="hero">
+    <svg class="bg" viewBox="0 0 200 200" aria-hidden="true"><g fill="none" stroke="#fff"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="90"/><path d="M100 0V200M0 100H200"/></g></svg>
+    <div class="row"><img src="../../design/logos/emblem-ru.svg" alt=""><div style="font-weight:500">Конкурс профмастерства ЭРТОС · мониторинг</div><div class="sp"></div><div class="seg" id="B-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div></div>
+    <h1>Тестирование идёт</h1><div style="position:relative;opacity:.85">Обновляется в реальном времени</div>
+    <div class="nums" id="B-nums"></div>
+  </div>
+  <div class="board" id="B-board"></div>
+</section>
+
+<!-- ═════════ C ═════════ -->
+<section class="variant" id="C">
+  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn ghost" style="height:40px">↧ Отчёт PDF</button></div>
+  <div class="wrapc">
+    <div class="kpis" id="C-kpis"></div>
+    <div class="twocol">
+      <div class="card mx"><h2>Матрица ответов</h2><div class="tiny">Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.</div>
+        <div class="matrix" id="C-mx"></div>
+        <div class="legend"><span><i style="background:var(--bl)"></i>Верно</span><span><i style="background:#fde8e9;box-shadow:inset 0 0 0 1.5px #f3a7ab"></i>Неверно</span><span><i style="background:#eef0f4"></i>Нет ответа</span></div></div>
+      <div class="side">
+        <div class="card"><h2>Ответ участника</h2><div class="detail" id="C-detail"><span class="tiny">Выберите клетку в матрице</span></div></div>
+        <div class="card"><h2>Самые сложные вопросы</h2><div class="hard" id="C-hard"></div></div>
+        <div class="card"><h2>Средний балл по филиалам</h2><div class="branch" id="C-branch"></div></div>
+      </div>
+    </div>
+    <p class="demo" style="margin-top:12px">Демо-данные макета.</p>
+  </div>
+</section>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"><button class="x" id="dx" aria-label="Закрыть">×</button><header id="dh"></header><div class="body" id="db"></div></aside>
+
+<nav class="vswitch" aria-label="Варианты макета"><span>Админ-панель</span><button data-v="A" aria-pressed="true">A · Реестр</button><button data-v="B" aria-pressed="false">B · Мониторинг</button><button data-v="C" aria-pressed="false">C · Аналитика</button></nav>
+
+<script>
+/* ── ДЕМО-ДАННЫЕ ── */
+const NQ=20;
+const SAMPLE={
+ "38":[["Какая частота используется в качестве аварийной частоты подвижной авиационной электросвязи?",["118,0 МГц","121,5 МГц","124,0 МГц","129,0 МГц"],1],
+  ["На какой частоте организуется единая командно-стартовая сеть?",["121,5 МГц","123,1 МГц","124,0 МГц","127,5 МГц"],2],
+  ["Какая частота определена как резервная?",["129,0 МГц","121,5 МГц","118,1 МГц","136,0 МГц"],0],
+  ["С какой даты вступают в силу ФАП, утверждённые приказом № 38?",["1 января 2026 г.","1 марта 2026 г.","5 апреля 2026 г.","1 сентября 2026 г."],2],
+  ["Какой раздел ФАП устанавливает порядок подготовки и допуска персонала?",["Раздел I","Раздел II","Раздел III","Раздел V"],2]],
+ "178":[["Из каких радиомаяков состоит РМС?",["РМА и РМД","КРМ и ГРМ","ОРЛ-Т и ВРЛ","ПРС и МРМ"],1],
+  ["Что обозначает сокращение ВРЛ?",["Всенаправленный радиолокатор","Вторичный радиолокатор","Выносной радиолокационный пост","Вертолётный радиолокатор"],1],
+  ["С какой даты вступили в силу ФАП, утверждённые приказом № 178?",["1 марта 2024 г.","30 мая 2024 г.","1 сентября 2024 г.","1 января 2025 г."],2],
+  ["В каком разделе установлены требования к ОРЛ-Т и ОРЛ-А?",["I. Общие положения","II. Требования к радиотехническому оборудованию","III. Требования к оборудованию электросвязи","IV. Заключительные положения"],1],
+  ["К какому типу оборудования относится ЛККС?",["Средства авиационной электросвязи","Наземное оборудование ГНСС","Метеорологическое оборудование","Светосигнальное оборудование"],1]]};
+const Q=f=>Array.from({length:NQ},(_,k)=>SAMPLE[f][k]?{q:SAMPLE[f][k][0],o:SAMPLE[f][k][1],c:SAMPLE[f][k][2]}:{q:`Вопрос № ${k+1} из банка вопросов ФАП № ${f}`,o:["Вариант А","Вариант Б","Вариант В","Вариант Г"],c:k%4});
+const QS={"38":Q("38"),"178":Q("178")};
+const BR=["Аэронавигация Центральной Сибири","Аэронавигация Урала","Аэронавигация Северо-Запада","Аэронавигация Дальнего Востока","Аэронавигация Юга"];
+const NAMES=["Иванов Иван Иванович","Петров Алексей Сергеевич","Смирнова Елена Викторовна","Кузнецов Дмитрий Андреевич","Соколов Максим Николаевич","Попова Ольга Геннадьевна","Лебедев Кирилл Павлович","Новиков Сергей Владимирович","Морозов Артём Александрович","Волкова Татьяна Игоревна","Фёдоров Роман Евгеньевич","Егоров Владимир Леонидович"];
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const short=n=>{const p=n.split(" ");return p[0]+" "+p[1][0]+". "+p[2][0]+"."};
+const ini=n=>{const p=n.split(" ");return p[0][0]+p[1][0]};
+const P=NAMES.map((n,i)=>{const mk=(f,state,cnt)=>{const skill=.55+rnd()*.4;const a=[];for(let k=0;k<NQ;k++){if(k>=cnt){a.push(null);continue}const right=rnd()<skill;const c=QS[f][k].c;a.push({v:right?c:(c+1+Math.floor(rnd()*3))%4,t:20+Math.floor(rnd()*90)})}return{state,a,started:"10:"+String(2+i).padStart(2,"0")}};
+ const s38=i<6?"done":i<9?"live":"none", s178=i<3?"done":i<6?"live":"none";
+ return{id:i,name:n,br:BR[i%BR.length],f:{"38":mk("38",s38,s38==="done"?NQ:s38==="live"?4+Math.floor(rnd()*12):0),"178":mk("178",s178,s178==="done"?NQ:s178==="live"?3+Math.floor(rnd()*12):0)}}});
+const score=(p,f)=>p.f[f].a.reduce((s,x,k)=>s+(x&&x.v===QS[f][k].c?1:0),0);
+const answered=(p,f)=>p.f[f].a.filter(Boolean).length;
+const tsum=(p,f)=>p.f[f].a.reduce((s,x)=>s+(x?x.t:0),0);
+const fmt=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const overall=p=>{const s=[p.f["38"].state,p.f["178"].state];return s.includes("live")?"live":s.every(x=>x==="done")?"done":s.every(x=>x==="none")?"none":"live"};
+const ST={live:"Проходит",done:"Завершил",none:"Не начал"};
+const $=(s,r=document)=>r.querySelector(s);const L="АБВГ";
+
+/* drawer */
+function openDrawer(p,f){f=f||(p.f["38"].state!=="none"?"38":"178");
+ const draw=()=>{const fs=p.f[f];$("#dh").innerHTML=`<div class="eyebrow tiny">${p.br}</div><div class="dh-name">${p.name}</div><div class="dh-meta"><div class="seg" id="dseg"><button data-f="38" aria-pressed="${f==="38"}">ФАП № 38</button><button data-f="178" aria-pressed="${f==="178"}">ФАП № 178</button></div><span class="st ${fs.state}">${ST[fs.state]}</span><span class="chip">Верно ${score(p,f)} из ${NQ}</span><span class="chip">⏱ ${fmt(tsum(p,f))}</span></div>`;
+  $("#db").innerHTML=fs.state==="none"?`<p class="muted">Участник ещё не начинал этот тест.</p>`:`<div class="ans-list">${QS[f].map((q,k)=>{const x=fs.a[k];const m=!x?"e":x.v===q.c?"y":"n";return `<div class="ans-row"><div class="qn">${k+1}</div><div><div class="qq">${q.q}</div><div class="aa">${!x?"Нет ответа":`Ответ: <b>${L[x.v]}. ${q.o[x.v]}</b>`}${x&&x.v!==q.c?` · верно: ${L[q.c]}. ${q.o[q.c]}`:""}</div></div><div class="tm"><span class="mark ${m}">${m==="y"?"✓":m==="n"?"✕":"—"}</span><div style="margin-top:4px">${x?x.t+" с":""}</div></div></div>`}).join("")}</div>`;
+  document.querySelectorAll("#dseg button").forEach(b=>b.onclick=()=>{f=b.dataset.f;draw()});};
+ draw();$("#drawer").classList.add("on");$("#scrim").classList.add("on");$("#drawer").setAttribute("aria-hidden","false");}
+const closeD=()=>{$("#drawer").classList.remove("on");$("#scrim").classList.remove("on");$("#drawer").setAttribute("aria-hidden","true")};
+$("#dx").onclick=closeD;$("#scrim").onclick=closeD;document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD()});
+
+/* ═════ A ═════ */
+const kpiHTML=(f)=>{const live=P.filter(p=>overall(p)==="live").length,done=P.filter(p=>overall(p)==="done").length;
+ const fin=f?P.filter(p=>p.f[f].state==="done"):P.filter(p=>p.f["38"].state==="done");const avg=fin.length?Math.round(fin.reduce((s,p)=>s+score(p,f||"38"),0)/fin.length/NQ*100):0;
+ return [["Участников",P.length,""],["Проходят сейчас",live,""],["Завершили оба теста",done,`<small> / ${P.length}</small>`],["Средний результат"+(f?" · ФАП "+f:""),avg,"<small>%</small>"]].map(([l,v,s],n)=>`<div class="card kpi rise" style="animation-delay:${n*.05}s"><div class="tiny">${l}</div><div class="v">${v}${s}</div></div>`).join("")};
+$("#A-kpis").innerHTML=kpiHTML();
+let aF="all";
+function aRows(){const q=$("#A-q").value.toLowerCase();
+ const cell=(p,f)=>{const s=p.f[f];if(s.state==="none")return `<span class="tiny">не начат</span>`;const n=answered(p,f),sc=score(p,f);return `<div class="sc"><b>${s.state==="done"?sc+"/"+NQ:n+"/"+NQ}</b><div><div class="pbar"><i style="width:${(s.state==="done"?sc:n)/NQ*100}%;${s.state==="live"?"background:var(--lb)":""}"></i></div><div class="tiny" style="margin-top:3px">${s.state==="done"?"верно":"отвечено"}</div></div></div>`};
+ $("#A-rows").innerHTML=P.filter(p=>(aF==="all"||overall(p)===aF)&&(p.name+p.br).toLowerCase().includes(q)).map(p=>`<tr data-id="${p.id}"><td><div class="who"><div class="ava">${ini(p.name)}</div><div>${p.name}<small>${p.br}</small></div></div></td><td>${cell(p,"38")}</td><td>${cell(p,"178")}</td><td><span class="st ${overall(p)}">${ST[overall(p)]}</span></td><td class="tiny">${fmt(tsum(p,"38")+tsum(p,"178"))}</td></tr>`).join("")||`<tr><td colspan="5" class="muted">Никого не найдено</td></tr>`;
+ document.querySelectorAll("#A-rows tr[data-id]").forEach(r=>r.onclick=()=>openDrawer(P[+r.dataset.id]));}
+$("#A-q").oninput=aRows;document.querySelectorAll("#A-st button").forEach(b=>b.onclick=()=>{aF=b.dataset.s;document.querySelectorAll("#A-st button").forEach(x=>x.setAttribute("aria-pressed",x===b));aRows()});
+aRows();
+
+/* ═════ B ═════ */
+let bF="38";const feed=[];
+function bRender(){const f=bF;document.querySelectorAll("#B-fap button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===f));
+ const g={live:[],done:[],none:[]};P.forEach(p=>g[p.f[f].state].push(p));
+ $("#B-nums").innerHTML=`<div><b>${g.live.length}</b><span>проходят сейчас</span></div><div><b>${g.done.length}</b><span>завершили</span></div><div><b>${g.none.length}</b><span>не начали</span></div><div><b>${g.done.length?Math.round(g.done.reduce((s,p)=>s+score(p,f),0)/g.done.length/NQ*100):0}%</b><span>средний результат</span></div>`;
+ const card=(p,n)=>{const s=p.f[f],a=answered(p,f);return `<div class="card pc rise" style="animation-delay:${n*.04}s" data-id="${p.id}"><div class="nm">${short(p.name)}</div><div class="br">${p.br}</div>${s.state==="live"?`<div class="ln"><span>Вопрос ${Math.min(a+1,NQ)} из ${NQ}</span><span>начал в ${s.started}</span></div><div class="pbar"><i style="width:${a/NQ*100}%"></i></div>`:s.state==="done"?`<div class="score"><div><b>${score(p,f)}/${NQ}</b>верно</div><div><b>${fmt(tsum(p,f))}</b>время</div></div>`:`<div class="tiny">Ожидает начала</div>`}</div>`};
+ const col=(k,t)=>`<div class="col"><h3><span class="st ${k}" style="padding:0 8px">${t}</span><span class="n">${g[k].length}</span></h3>${g[k].map(card).join("")}</div>`;
+ $("#B-board").innerHTML=col("live","Проходят")+col("done","Завершили")+col("none","Не начали")+`<div class="card feed"><h3>Лента событий</h3><div id="B-feed">${feed.map(e=>`<div class="ev"><time>${e.t}</time><div>${e.h}</div></div>`).join("")||'<p class="tiny">События появятся здесь</p>'}</div><p class="demo" style="margin-top:10px">Демо: события генерируются каждые 3 с.</p></div>`;
+ document.querySelectorAll("#B .pc").forEach(c=>c.onclick=()=>openDrawer(P[+c.dataset.id],f));}
+document.querySelectorAll("#B-fap button").forEach(b=>b.onclick=()=>{bF=b.dataset.f;bRender()});
+let clock=10*60+31;
+setInterval(()=>{clock++;const live=P.filter(p=>p.f[bF].state==="live");if(!live.length)return;const p=live[Math.floor(rnd()*live.length)],s=p.f[bF],k=s.a.findIndex(x=>!x);if(k<0)return;const c=QS[bF][k].c,right=rnd()<.7;s.a[k]={v:right?c:(c+1)%4,t:20+Math.floor(rnd()*60)};
+ let h=`<b>${short(p.name)}</b> ответил на вопрос ${k+1} — <span class="${right?"ok":"bad"}">${right?"верно":"неверно"}</span>`;
+ if(answered(p,bF)===NQ){s.state="done";h=`<b>${short(p.name)}</b> завершил ФАП № ${bF}: ${score(p,bF)}/${NQ}`}
+ feed.unshift({t:String(Math.floor(clock/60)).padStart(2,"0")+":"+String(clock%60).padStart(2,"0"),h});feed.length=Math.min(feed.length,14);
+ if($("#B").classList.contains("on")&&!$("#drawer").classList.contains("on"))bRender();},3000);
+bRender();
+
+/* ═════ C ═════ */
+let cF="38",sel=null;
+function cRender(){const f=cF;document.querySelectorAll("#C-fap button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===f));
+ const started=P.filter(p=>p.f[f].state!=="none");
+ const pct=QS[f].map((q,k)=>{const a=started.map(p=>p.f[f].a[k]).filter(Boolean);return a.length?Math.round(a.filter(x=>x.v===q.c).length/a.length*100):null});
+ const done=P.filter(p=>p.f[f].state==="done");const avg=done.length?Math.round(done.reduce((s,p)=>s+score(p,f),0)/done.length/NQ*100):0;
+ const best=done.slice().sort((a,b)=>score(b,f)-score(a,f))[0];
+ $("#C-kpis").innerHTML=[["Завершили",done.length+"<small> / "+P.length+"</small>"],["Средний результат",avg+"<small>%</small>"],["Лучший результат",best?score(best,f)+"<small>/"+NQ+" · "+short(best.name)+"</small>":"—"],["Среднее время на вопрос",(()=>{const a=started.flatMap(p=>p.f[f].a.filter(Boolean));return a.length?Math.round(a.reduce((s,x)=>s+x.t,0)/a.length):0})()+"<small> с</small>"]].map(([l,v])=>`<div class="card kpi"><div class="tiny">${l}</div><div class="v">${v}</div></div>`).join("");
+ const mx=$("#C-mx");mx.style.gridTemplateColumns=`190px repeat(${NQ},minmax(22px,1fr)) 44px`;
+ let h=`<div></div>${QS[f].map((_,k)=>`<div class="h">${k+1}</div>`).join("")}<div class="h">Итог</div>`;
+ started.forEach((p,r)=>{h+=`<div class="nm">${short(p.name)} <small>${p.f[f].state==="live"?"· идёт":""}</small></div>`+QS[f].map((q,k)=>{const x=p.f[f].a[k];const m=!x?"e":x.v===q.c?"y":"n";const isSel=sel&&sel.p===p.id&&sel.k===k;return `<button class="cell ${m} ${isSel?"sel":""}" data-p="${p.id}" data-k="${k}" aria-label="${short(p.name)}, вопрос ${k+1}">${m==="y"?"✓":m==="n"?"✕":""}</button>`}).join("")+`<div class="tot">${score(p,f)}</div>`});
+ h+=`<div class="nm tiny" style="color:var(--ink3)">% верных</div>`+pct.map(v=>`<div class="pct" style="${v!=null&&v<50?"color:var(--bad);font-weight:700":""}">${v==null?"—":v}</div>`).join("")+`<div></div>`;
+ mx.innerHTML=h;
+ mx.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{sel={p:+c.dataset.p,k:+c.dataset.k};cRender()});
+ if(sel){const p=P[sel.p],q=QS[f][sel.k],x=p.f[f].a[sel.k];$("#C-detail").innerHTML=`<div class="tiny">${p.name} · вопрос ${sel.k+1}</div><div class="q">${q.q}</div>${q.o.map((o,j)=>`<div style="padding:6px 10px;border-radius:10px;margin-top:4px;${j===q.c?"background:#e3f0fa;color:var(--dk);font-weight:500":x&&x.v===j?"background:#fde8e9;color:var(--bad)":""}">${L[j]}. ${o}${j===q.c?" ✓":""}${x&&x.v===j&&j!==q.c?" ✕ ответ участника":""}</div>`).join("")}<div class="tiny" style="margin-top:8px">${x?"Время на ответ: "+x.t+" с":"Нет ответа"}</div><button class="btn ghost" style="margin-top:12px;height:38px;width:100%" id="C-open">Все ответы участника</button>`;$("#C-open").onclick=()=>openDrawer(p,f)}
+ else $("#C-detail").innerHTML='<span class="tiny">Выберите клетку в матрице</span>';
+ $("#C-hard").innerHTML=pct.map((v,k)=>({v,k})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v).slice(0,5).map(x=>`<div><b>№${x.k+1}</b><div class="pbar"><i style="width:${x.v}%;background:${x.v<50?"var(--rd)":"var(--bl)"}"></i></div><span class="tiny" style="text-align:right">${x.v}%</span></div>`).join("");
+ $("#C-branch").innerHTML=BR.map(b=>{const d=done.filter(p=>p.br===b);return{b,v:d.length?Math.round(d.reduce((s,p)=>s+score(p,f),0)/d.length/NQ*100):null}}).sort((a,b)=>(b.v??-1)-(a.v??-1)).map(x=>`<div><div class="l"><span>${x.b}</span><b style="color:var(--dk)">${x.v==null?"—":x.v+"%"}</b></div><div class="pbar"><i style="width:${x.v||0}%"></i></div></div>`).join("");
+}
+document.querySelectorAll("#C-fap button").forEach(b=>b.onclick=()=>{cF=b.dataset.f;sel=null;cRender()});
+cRender();
+
+document.querySelectorAll(".vswitch button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".vswitch button").forEach(x=>x.setAttribute("aria-pressed",x===b));document.querySelectorAll(".variant").forEach(v=>v.classList.toggle("on",v.id===b.dataset.v));closeD();if(b.dataset.v==="B")bRender();if(b.dataset.v==="C")cRender();scrollTo(0,0)});
+</script>
+</body></html>

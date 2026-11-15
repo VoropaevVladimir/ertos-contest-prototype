@@ -1,0 +1,11 @@
+/* DIN Pro — файлы в design/fonts. Лицензия: не публиковать в открытом доступе. */
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_light.woff2") format("woff2");font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_lightitalic.woff2") format("woff2");font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_italic.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_medium.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_mediumitalic.woff2") format("woff2");font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_bolditalic.woff2") format("woff2");font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_black.woff2") format("woff2");font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:"DIN Pro";src:url("../../design/fonts/dinpro_blackitalic.woff2") format("woff2");font-weight:900;font-style:italic;font-display:swap}

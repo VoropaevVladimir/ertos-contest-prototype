@@ -1,0 +1,42 @@
+/* Общие стили и токены сайта конкурса ЭРТОС. Эталон — менять только по согласованию. */
+@import url("fonts.css");
+:root{
+  --dk:#1e2171; --bl:#0075bf; --lb:#68aee0; --rd:#ed1c24; --gr:#c8c8c8; --sky:#73c6dc; --ab:#4061a6;
+  --ink:#0d1030; --ink2:#4a4f63; --ink3:#5b6170; --line:#e3e6ee; --line2:#c3c8d4; --bg:#f4f6fa; --white:#fff;
+  --ok:#0075bf; --bad:#c4121a; --warn:#b26a00;
+  --r-sm:8px; --r:12px; --r-card:24px; --r-panel:28px;
+  --sh-card:0 1px 2px rgba(30,33,113,.06),0 12px 40px rgba(30,33,113,.10);
+  --sh-btn:0 6px 18px rgba(0,117,191,.28);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:"DIN Pro",Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border:0;border-radius:var(--r);background:var(--bl);color:#fff;font-weight:700;font-size:15px;transition:background .15s,box-shadow .15s,transform .1s}
+.btn:hover{background:#00649f;box-shadow:var(--sh-btn)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--white);color:var(--dk);border:1px solid var(--line2)}
+.btn.ghost:hover{background:#eef2f8;box-shadow:none}
+.btn.dark{background:var(--dk)}
+.btn:focus-visible,.opt:focus-visible,.chip:focus-visible{outline:3px solid var(--dk);outline-offset:2px}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--dk);outline-offset:2px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.card{background:var(--white);border-radius:var(--r-card);box-shadow:var(--sh-card)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:999px;font-size:12.5px;font-weight:500;background:#eef2f8;color:var(--dk);border:0}
+.muted{color:var(--ink2)}
+.tiny{font-size:12.5px;color:var(--ink3)}
+.eyebrow{font-weight:500;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+
+/* variant switcher (only for choosing a variant) */
+.vswitch{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:100;display:flex;gap:4px;padding:5px;background:rgba(13,16,48,.88);backdrop-filter:blur(8px);border-radius:999px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.vswitch span{color:#aab0c6;font-size:12px;padding:0 10px 0 12px;align-self:center}
+.vswitch button{white-space:nowrap;height:34px;padding:0 16px;border:0;border-radius:999px;background:transparent;color:#fff;font-weight:500;font-size:13px}
+.vswitch button[aria-pressed="true"]{background:var(--bl)}
+.variant{display:none;min-height:100vh}
+.variant.on{display:block;animation:vin .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes vin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+@media (max-width:720px){.vswitch span{display:none}.vswitch button{padding:0 11px;font-size:12px}}
