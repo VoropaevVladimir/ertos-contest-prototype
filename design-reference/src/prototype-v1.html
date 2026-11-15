@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Сайт конкурса ЭРТОС — прототип (старая карта)</title>
+<style>
+@import url("common.css");
+.screen{display:none;min-height:100vh}
+.screen.on{display:block;animation:vin .45s cubic-bezier(.2,.8,.2,1)}
+#loginScreen{
+  --brand-dark-blue:#1e2171; --brand-blue:#0075bf; --brand-light-blue:#68aee0;
+  --brand-red:#ed1c24; --brand-gray:#c8c8c8; --white:#ffffff; --ink:#000000;
+  --ink-2:#4a4a4a; --line:#d4d7e0; --bg:#f4f6fa;
+  --radius:12px; --radius-card:24px; --radius-panel:28px;
+}
+#loginScreen *{box-sizing:border-box}
+#loginScreen{height:100%}
+#loginScreen{margin:0;font-family:"DIN Pro",Arial,sans-serif;color:var(--ink);background:var(--bg);font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+#loginScreen .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(420px,1fr);min-height:100vh;padding:16px;gap:16px}
+#loginScreen .brand{position:relative;overflow:hidden;background:linear-gradient(160deg,#0075bf 0%,#1e2171 100%);border-radius:var(--radius-panel);color:var(--white);padding:48px 56px;display:flex;flex-direction:column;justify-content:space-between}
+#loginScreen .brand svg.radar{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#loginScreen .brand .org{position:relative;font-weight:500;font-size:14px;letter-spacing:.02em;opacity:.92}
+#loginScreen .brand .hero{position:relative;max-width:520px}
+#loginScreen .brand .eyebrow{font-weight:500;font-size:13px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;margin-bottom:16px}
+#loginScreen .brand h1{margin:0;font-weight:700;font-size:44px;line-height:1.08;text-transform:uppercase}
+#loginScreen .brand h1 span{display:block}
+#loginScreen .brand .lead{margin:20px 0 0;font-size:17px;line-height:1.5;opacity:.92;max-width:440px}
+#loginScreen .side{display:flex;flex-direction:column;padding:24px 8px}
+#loginScreen .side main{flex:1;display:flex;align-items:center;justify-content:center}
+#loginScreen .card{width:100%;max-width:420px;background:var(--white);border-radius:var(--radius-card);padding:44px 40px 36px;box-shadow:0 1px 2px rgba(30,33,113,.06),0 12px 40px rgba(30,33,113,.10)}
+#loginScreen .logo{display:block;width:112px;height:auto;margin:0 0 24px}
+#loginScreen .card h2{margin:0;font-weight:700;font-size:24px;line-height:1.2;color:var(--brand-dark-blue)}
+#loginScreen .card .sub{margin:8px 0 28px;color:var(--ink-2);font-size:15px}
+#loginScreen .field{margin-bottom:18px}
+#loginScreen label{display:block;font-weight:500;font-size:14px;margin-bottom:6px;color:var(--ink)}
+#loginScreen .input{position:relative}
+#loginScreen input{width:100%;height:50px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:var(--white);border:1px solid #c3c8d4;border-radius:var(--radius);background:#fafbfd;outline:none;transition:border-color .15s}
+#loginScreen input:hover{border-color:#6f7686}
+#loginScreen input:focus{border-color:var(--brand-blue);background:var(--white);box-shadow:0 0 0 4px rgba(0,117,191,.18)}
+#loginScreen input[aria-invalid="true"]{border-color:var(--brand-red)}
+#loginScreen .toggle{position:absolute;right:6px;top:6px;height:38px;border-radius:8px;padding:0 10px;border:0;background:none;font:inherit;font-size:13px;font-weight:500;color:var(--brand-blue);cursor:pointer;border-radius:var(--radius)}
+#loginScreen .toggle:focus-visible{outline:2px solid var(--brand-dark-blue);outline-offset:1px}
+#loginScreen .err{display:none;margin-top:6px;font-size:13px;font-weight:500;color:#c4121a}
+#loginScreen .err.on{display:block}
+#loginScreen .btn{width:100%;height:52px;margin-top:10px;border:0;border-radius:var(--radius);background:var(--brand-blue);color:var(--white);font:inherit;font-weight:700;font-size:16px;letter-spacing:.02em;cursor:pointer;transition:background .15s,box-shadow .15s}
+#loginScreen .btn:hover{background:#00649f;box-shadow:0 6px 18px rgba(0,117,191,.28)}
+#loginScreen .btn:active{background:var(--brand-dark-blue)}
+#loginScreen .btn:focus-visible{outline:3px solid var(--brand-dark-blue);outline-offset:2px}
+#loginScreen .btn[disabled]{background:#5d9fd0;cursor:progress}
+#loginScreen .alert{display:none;margin:0 0 18px;padding:12px 14px;border-radius:var(--radius);font-size:14px;line-height:1.4}
+#loginScreen .alert.on{display:block}
+#loginScreen .alert.bad{background:#fdecec;color:#a30f16;border:1px solid #f4b8ba}
+#loginScreen .alert.ok{background:#e8f2fa;color:var(--brand-dark-blue);border:1px solid #b9d7ee}
+#loginScreen .help{margin:24px 0 0;padding:14px 16px;background:var(--bg);border-radius:var(--radius);font-size:13.5px;color:var(--ink-2)}
+#loginScreen .help b{color:var(--ink);font-weight:500}
+#loginScreen .side footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;max-width:420px;width:100%;margin:24px auto 0;font-size:12.5px;color:#5b6170}
+#loginScreen .side footer a{color:var(--brand-blue);font-weight:700;text-decoration:none;letter-spacing:.06em}
+@keyframes panelIn{from{opacity:0;transform:translateX(-24px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes lineUp{from{transform:translateY(105%)}to{transform:none}}
+@keyframes ring{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(1);opacity:.9}100%{transform:scale(7);opacity:0}}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px) scale(.97)}to{opacity:1;transform:none}}
+#loginScreen.anim .brand{animation:panelIn .9s cubic-bezier(.2,.8,.2,1) both}
+#loginScreen.anim .radar .ax{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.2s .35s cubic-bezier(.6,0,.2,1) forwards}
+#loginScreen.anim .radar .rg{transform-box:view-box;transform-origin:600px 340px;animation:ring 1s cubic-bezier(.2,.8,.2,1) both}
+#loginScreen.anim .radar .rg:nth-child(3){animation-delay:.45s}
+#loginScreen.anim .radar .rg:nth-child(4){animation-delay:.6s}
+#loginScreen.anim .radar .rg:nth-child(5){animation-delay:.75s}
+#loginScreen.anim .radar .rg:nth-child(6){animation-delay:.9s}
+#loginScreen .radar .sw{transform-box:view-box;transform-origin:600px 340px;animation:sweep 9s linear infinite}
+#loginScreen.anim .radar .swwrap{animation:rise 1s 1s both}
+#loginScreen .radar .ping{transform-box:fill-box;transform-origin:center;animation:ping 2.4s 1.4s ease-out infinite}
+#loginScreen.anim .org{animation:rise .7s .3s both}
+#loginScreen.anim .eyebrow{animation:rise .7s .45s both}
+#loginScreen .brand h1 span{overflow:hidden}
+#loginScreen .brand h1 span i{display:block;font-style:normal}
+#loginScreen.anim .brand h1 span i{animation:lineUp .8s cubic-bezier(.2,.8,.2,1) both}
+#loginScreen.anim .brand h1 span:nth-child(1) i{animation-delay:.55s}
+#loginScreen.anim .brand h1 span:nth-child(2) i{animation-delay:.65s}
+#loginScreen.anim .brand h1 span:nth-child(3) i{animation-delay:.75s}
+#loginScreen.anim .brand h1 span:nth-child(4) i{animation-delay:.85s}
+#loginScreen.anim .lead{animation:rise .8s 1.05s both}
+#loginScreen.anim .card{animation:cardIn .9s .35s cubic-bezier(.2,.8,.2,1) both}
+#loginScreen.anim .card > *{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+#loginScreen.anim .card > :nth-child(1){animation-delay:.6s}
+#loginScreen.anim .card > :nth-child(2){animation-delay:.68s}
+#loginScreen.anim .card > :nth-child(3){animation-delay:.76s}
+#loginScreen.anim .card > :nth-child(5){animation-delay:.84s}
+#loginScreen.anim .card > :nth-child(6){animation-delay:.92s}
+#loginScreen.anim .card > :nth-child(7){animation-delay:1s}
+#loginScreen.anim .card > :nth-child(8){animation-delay:1.08s}
+#loginScreen.anim .side footer{animation:rise .7s 1.2s both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
+#loginScreen.anim .airmap .grat,#loginScreen.anim .airmap .gratlbl{animation:fadeIn 1.4s .3s both}
+#loginScreen .routes path{stroke-dasharray:1;stroke-dashoffset:0}
+#loginScreen.anim .routes path{stroke-dashoffset:1;animation:draw 1.1s cubic-bezier(.6,0,.2,1) forwards;animation-delay:calc(.9s + var(--i)*70ms)}
+#loginScreen .apt{transform-box:fill-box;transform-origin:center}
+#loginScreen.anim .apt{animation:pop .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.8s + var(--i)*60ms)}
+#loginScreen.anim .blips{animation:fadeIn 1s 2s both}
+@media (prefers-reduced-motion:reduce){#loginScreen .routes path{stroke-dashoffset:0!important}
+#loginScreen .blips{display:none}}
+@media (prefers-reduced-motion:reduce){#loginScreen *,#loginScreen *::before,#loginScreen *::after{animation:none!important;transition:none!important}
+#loginScreen .radar .ax{stroke-dashoffset:0!important}}
+@media (max-width:900px){#loginScreen .wrap{grid-template-columns:1fr;padding:12px;gap:12px}
+#loginScreen .brand{padding:28px 20px 32px;min-height:auto;border-radius:22px}
+#loginScreen .brand .hero{margin-top:36px}
+#loginScreen .brand h1{font-size:28px}
+#loginScreen .brand .lead{font-size:15px;margin-top:12px}
+#loginScreen .side{padding:4px 0 12px}
+#loginScreen .card{padding:28px 20px 24px;border-radius:20px}}
+#loginScreen{position:fixed;inset:0;overflow:auto;z-index:50}
+#loginScreen .input .lic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#8a90a3;pointer-events:none;display:flex}
+#loginScreen .input.has-lead input{padding-left:44px}
+#loginScreen .input:focus-within .lic{color:var(--brand-blue)}
+#loginScreen .toggle{display:grid;place-items:center;width:42px;padding:0;color:#6f7686}
+#loginScreen .toggle:hover{color:var(--brand-blue);background:#eef4fb}
+#loginScreen .btn{display:flex;align-items:center;justify-content:center;gap:10px}
+#loginScreen .help{display:flex;gap:12px;align-items:flex-start}
+#loginScreen .help .hi{color:var(--brand-blue);display:flex;margin-top:1px}
+
+#loginScreen.off{display:none}
+.logout{margin-left:6px}
+#tst .fap .meta span{display:inline-flex;align-items:center;gap:6px}
+#tst .fap .go{display:grid}
+#tst .rules div{display:flex;gap:12px;align-items:flex-start}
+#tst .rules .ri{flex:none;width:38px;height:38px;border-radius:10px;background:#eaf4fb;color:var(--bl);display:grid;place-items:center}
+#tst .opt .ot{flex:1}
+#tst .opt .chk{color:#d5dae4;transition:color .2s}
+#tst .opt[aria-checked="true"] .chk{color:var(--bl)}
+#tst .opt:hover .chk{color:#b9c7da}
+#tst .opt[aria-checked="true"]:hover .chk{color:var(--bl)}
+#tst .resic{width:76px;height:76px;margin:0 auto 14px;border-radius:24px;background:#eaf4fb;color:var(--bl);display:grid;place-items:center}
+#adm .kpi .tiny{display:flex;align-items:center;gap:8px}
+#adm .kpi .ki{width:30px;height:30px;border-radius:9px;background:#eaf4fb;color:var(--bl);display:grid;place-items:center}
+#adm h2{display:flex;align-items:center;gap:8px}
+#adm h2 .ph{color:var(--bl)}
+.drawer .x{display:grid;place-items:center}
+.mark{width:24px;height:24px;background:none!important}.mark .ph{width:24px;height:24px}.mark.e{background:#eef0f4!important}
+#adm .matrix .cell.y,#adm .matrix .cell.n{background:none;box-shadow:none;padding:0}
+#adm .cell .ci{width:112%;height:112%;margin:-6%}
+#adm .matrix .cell.y{color:var(--bl)}#adm .matrix .cell.n{color:#e0444b}
+
+/* ───────── shared header ───────── */
+.top{display:flex;align-items:center;gap:16px;padding:14px 24px;background:var(--white);border-bottom:1px solid var(--line)}
+.top img{height:34px}
+.top .ttl{font-weight:700;color:var(--dk);font-size:15px;line-height:1.15}
+.top .ttl small{display:block;font-weight:400;color:var(--ink3);font-size:12px}
+.top .sp{flex:1}
+.user{display:flex;align-items:center;gap:10px;font-size:13px}
+.ava{width:34px;height:34px;border-radius:50%;background:var(--dk);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+
+/* question + options (shared look) */
+.qnum{font-weight:500;color:var(--bl);font-size:13px;letter-spacing:.04em}
+.qtext{font-weight:700;color:var(--dk);font-size:24px;line-height:1.25;margin:10px 0 24px}
+.opts{display:grid;gap:12px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:16px 18px;border-radius:var(--r);border:1.5px solid var(--line2);background:var(--white);font-size:16px;transition:border-color .15s,background .15s,transform .1s}
+.opt:hover{border-color:var(--lb);background:#f7fbfe}
+.opt .k{flex:none;width:30px;height:30px;border-radius:var(--r-sm);display:grid;place-items:center;background:#eef2f8;color:var(--dk);font-weight:700;font-size:13px}
+.opt[aria-checked="true"]{border-color:var(--bl);background:#eaf4fb}
+.opt[aria-checked="true"] .k{background:var(--bl);color:#fff}
+.timer{display:inline-flex;align-items:center;gap:8px;font-variant-numeric:tabular-nums;font-weight:700}
+.demo-note{font-size:12px;color:var(--ink3);margin-top:18px}
+
+/* ═════════ VARIANT A — карточки, пошагово ═════════ */
+#tst .wrap{max-width:980px;margin:0 auto;padding:36px 24px 120px}
+#tst .hello h1{font-size:34px;line-height:1.1;color:var(--dk);margin:6px 0 8px}
+#tst .faps{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:28px}
+#tst .fap{position:relative;overflow:hidden;text-align:left;border:0;padding:28px;border-radius:var(--r-card);color:#fff;min-height:270px;display:flex;flex-direction:column;justify-content:space-between;transition:transform .2s,box-shadow .2s}
+#tst .fap:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(30,33,113,.25)}
+#tst .fap[disabled]{opacity:.6;cursor:default;transform:none;box-shadow:none}
+#tst .fap:focus-visible{outline-offset:3px}
+#tst .fap.f38{background:linear-gradient(150deg,#0075bf,#1e2171)}
+#tst .fap.f178{background:linear-gradient(150deg,#4061a6,#1e2171)}
+#tst .fap > svg{position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;opacity:.35}
+#tst .fap .eyebrow{padding-right:56px}
+#tst .fap .no{font-weight:700;font-size:56px;line-height:1;letter-spacing:-.01em}
+#tst .fap .nm{font-size:15px;line-height:1.35;max-width:330px;opacity:.95;margin-top:10px}
+#tst .fap .meta{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+#tst .fap .meta span{background:rgba(255,255,255,.16);border-radius:999px;padding:5px 12px;font-size:12.5px}
+#tst .fap .go{position:absolute;right:24px;top:24px;width:44px;height:44px;border-radius:50%;background:#fff;color:var(--dk);display:grid;place-items:center;font-size:20px}
+#tst .rules{margin-top:20px;padding:18px 22px;display:flex;gap:28px;flex-wrap:wrap;font-size:13.5px}
+#tst .rules b{display:block;color:var(--dk);font-size:14px}
+#tst .bar{height:8px;border-radius:999px;background:#e3e9f3;overflow:hidden}
+#tst .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--lb),var(--bl));border-radius:999px;transition:width .4s}
+#tst .testhead{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+#tst .testhead .sp{flex:1}
+#tst .qcard{padding:36px}
+#tst .nav{display:flex;justify-content:space-between;margin-top:28px;gap:12px}
+#tst .dots{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+#tst .dots button{width:30px;height:30px;border-radius:var(--r-sm);border:1.5px solid var(--line2);background:#fff;font-size:12px;font-weight:500}
+#tst .dots button.ans{background:#eaf4fb;border-color:var(--lb)}
+#tst .dots button.cur{border-color:var(--dk);background:var(--dk);color:#fff}
+#tst .res{padding:40px;text-align:center}
+#tst .res .big{font-size:64px;font-weight:700;color:var(--dk);line-height:1}
+
+.seg{display:inline-flex;background:#eef2f8;border-radius:var(--r);padding:4px}
+.seg button{border:0;background:transparent;height:34px;padding:0 14px;border-radius:9px;font-weight:500;font-size:13px;color:var(--ink2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--dk);box-shadow:0 1px 3px rgba(30,33,113,.15)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.mark{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;font-size:12px;font-weight:700}
+.mark.y{background:#e3f0fa;color:var(--bl)}.mark.n{background:#fde8e9;color:var(--bad)}.mark.e{background:#eef0f4;color:var(--ink3)}
+.pbar{height:6px;border-radius:999px;background:#e8ecf3;overflow:hidden}.pbar i{display:block;height:100%;border-radius:999px;background:var(--bl)}
+.st{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:500;white-space:nowrap}
+.st::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.live{background:#e3f0fa;color:var(--bl)}.st.live::before{animation:blink 1.2s infinite}
+.st.done{background:#e9ecf6;color:var(--dk)}.st.none{background:#f0f1f4;color:var(--ink3)}
+@keyframes blink{50%{opacity:.25}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{padding:18px 20px}
+.kpi .v{font-size:32px;font-weight:700;color:var(--dk);line-height:1.1;margin-top:6px}
+.kpi .v small{font-size:15px;color:var(--ink3);font-weight:500}
+.ans-list{display:grid;gap:8px}
+.ans-row{display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:start;padding:12px 14px;border-radius:var(--r);background:var(--bg)}
+.ans-row .qn{font-weight:700;color:var(--dk);font-size:13px;padding-top:2px}
+.ans-row .qq{font-size:13.5px;font-weight:500;color:var(--ink)}
+.ans-row .aa{font-size:12.5px;color:var(--ink2);margin-top:3px}
+.ans-row .tm{font-size:12px;color:var(--ink3);text-align:right;white-space:nowrap}
+.scrim{position:fixed;inset:0;background:rgba(13,16,48,.35);backdrop-filter:blur(2px);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:12px;right:12px;bottom:12px;width:min(560px,calc(100% - 24px));z-index:61;background:#fff;border-radius:var(--r-card);box-shadow:0 20px 60px rgba(13,16,48,.3);transform:translateX(110%);transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer header{padding:22px 24px 14px;border-bottom:1px solid var(--line)}
+.drawer .body{padding:16px 24px 24px;overflow:auto}
+.drawer .x{position:absolute;right:16px;top:16px;width:36px;height:36px;border-radius:10px;border:0;background:var(--bg);font-size:18px}
+.dh-name{font-size:22px;font-weight:700;color:var(--dk)}
+.dh-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.demo{font-size:12px;color:var(--ink3)}
+
+/* ═════════ C — аналитика ═════════ */
+#adm .topc{display:flex;align-items:center;gap:14px;padding:14px 24px;background:#fff;border-bottom:1px solid var(--line);flex-wrap:wrap}
+#adm .topc img{height:34px}
+#adm .topc .sp{flex:1}
+#adm .topc b{color:var(--dk)}
+#adm .wrapc{padding:24px;max-width:1440px;margin:0 auto 120px}
+#adm .twocol{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-top:16px}
+#adm .mx{padding:20px;overflow:auto}
+#adm .mx h2,#adm .side h2{margin:0 0 4px;font-size:16px;color:var(--dk)}
+#adm .matrix{display:grid;gap:4px;margin-top:16px;min-width:760px}
+#adm .matrix .h{font-size:11px;color:var(--ink3);text-align:center;align-self:end}
+#adm .matrix .nm{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;align-self:center}
+#adm .matrix .nm small{color:var(--ink3)}
+#adm .cell{aspect-ratio:1;border-radius:7px;border:0;display:grid;place-items:center;font-size:11px;font-weight:700;transition:transform .1s}
+#adm .cell:hover{transform:scale(1.15);z-index:2}
+#adm .cell.y{background:var(--bl);color:#fff}
+#adm .cell.n{background:#fde8e9;color:var(--bad);box-shadow:inset 0 0 0 1.5px #f3a7ab}
+#adm .cell.e{background:#eef0f4;color:#aeb3c2}
+#adm .cell.sel{outline:2.5px solid var(--dk);outline-offset:1px}
+#adm .matrix .tot{font-size:13px;font-weight:700;color:var(--dk);text-align:right;align-self:center}
+#adm .matrix .pct{font-size:10.5px;text-align:center;color:var(--ink2)}
+#adm .legend{display:flex;gap:16px;font-size:12.5px;color:var(--ink2);margin-top:14px;flex-wrap:wrap}
+#adm .legend i{display:inline-block;width:14px;height:14px;border-radius:5px;vertical-align:-2px;margin-right:6px}
+#adm .side{display:grid;gap:16px;align-content:start}
+#adm .side .card{padding:20px}
+#adm .hard{display:grid;gap:10px;margin-top:12px}
+#adm .hard div{display:grid;grid-template-columns:30px 1fr 44px;gap:10px;align-items:center;font-size:13px}
+#adm .hard b{color:var(--dk)}
+#adm .branch{display:grid;gap:12px;margin-top:12px}
+#adm .branch .l{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+#adm .detail{margin-top:12px;font-size:13.5px}
+#adm .detail .q{font-weight:500;color:var(--ink);margin:6px 0}
+
+@media (max-width:720px){
+  .top{padding:12px 16px;flex-wrap:wrap}.top .ttl small{display:none}
+  #tst .faps{grid-template-columns:1fr}
+  #tst .wrap{padding:24px 16px 110px}#tst .hello h1{font-size:26px}#tst .qcard{padding:22px}
+  .qtext{font-size:20px}
+  .top .user span{display:none}
+  .btn{padding:0 16px;white-space:nowrap}
+}
+@media (max-width:900px){.card,#tst .fap{border-radius:20px}}
+@media (max-width:1100px){#adm .twocol{grid-template-columns:1fr}}
+@media (max-width:800px){#C .wrapc{padding:16px}.kpis{grid-template-columns:1fr 1fr}}
+.drawer .x{transition:color .15s,background .15s}
+.drawer .x:hover{color:var(--bad);background:#fde8e9}
+/* ───────── участники и форма добавления ───────── */
+.fi{width:100%;height:50px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fafbfd;border:1px solid var(--line2);border-radius:var(--r);outline:none;transition:border-color .15s}
+.fi:hover{border-color:#6f7686}
+.fi:focus{border-color:var(--bl);background:#fff;box-shadow:0 0 0 4px rgba(0,117,191,.18)}
+.fi[aria-invalid="true"]{border-color:var(--rd)}
+.fi.sm{height:40px;width:280px;max-width:100%;font-size:14px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-weight:500;font-size:14px;margin-bottom:6px}
+.fld .optn{font-weight:400;color:var(--ink2);font-size:13px;margin-left:6px}
+.ferr{display:none;margin-top:6px;font-size:13px;font-weight:500;color:var(--bad)}
+.ferr.on{display:block}
+.inp{position:relative}
+.eye{position:absolute;right:6px;top:6px;width:42px;height:38px;border:0;border-radius:var(--r);background:none;color:#6f7686;display:grid;place-items:center}
+.eye:hover{color:var(--bl);background:#eef4fb}
+.okic{width:56px;height:56px;border-radius:18px;margin-bottom:14px;background:#eaf4fb;color:var(--bl);display:grid;place-items:center}
+.cred{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:16px 0;padding:14px 16px;background:var(--bg);border-radius:var(--r)}
+.cred dt{color:var(--ink2);font-size:13px}
+.cred dd{margin:0;font-weight:700;color:var(--dk);word-break:break-all}
+#adm .people{margin-top:16px;padding:20px}
+#adm .people .phead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+#adm .people h2{margin:0;font-size:16px;color:var(--dk);flex:1}
+#adm .people h2 .cnt{color:var(--ink2);font-weight:500;font-size:14px;margin-left:2px}
+#adm .urow,#adm .uhead{display:grid;grid-template-columns:minmax(200px,1.6fr) 110px minmax(150px,1fr) minmax(150px,1fr) 92px;gap:12px;align-items:center}
+#adm .uhead{padding:0 14px 8px;font-size:12px;color:var(--ink2)}
+#adm .urow{padding:12px 14px;border-radius:var(--r);background:var(--bg)}
+#adm .ulist{display:grid;gap:8px}
+#adm .urow.hl{background:#eaf4fb}
+[hidden]{display:none!important}
+#adm .uc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-size:13.5px}
+#adm .uc b{color:var(--dk);font-size:14px}
+#adm .uc .ul{display:none;font-size:12px;color:var(--ink2)}
+@media (max-width:900px){#adm .uhead{display:none}#adm .urow{grid-template-columns:1fr 1fr}#adm .urow .nm2{grid-column:1/-1}#adm .uc .ul{display:block}.fi.sm{width:100%}}
+.ph{flex:none;display:inline-block;vertical-align:-0.15em}
+morph-icon{display:inline-flex}
+</style>
+<script src="vendor/morphicons-element.iife.js"></script>
+<script>
+/* Phosphor Icons (fill), MIT — https://phosphoricons.com */
+const PH={"eye": "<path d=\"M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z\"/>", "eye-slash": "<path d=\"M96.68,57.87a4,4,0,0,1,2.08-6.6A130.13,130.13,0,0,1,128,48c34.88,0,66.57,13.26,91.66,38.35,18.83,18.83,27.3,37.62,27.65,38.41a8,8,0,0,1,0,6.5c-.35.79-8.82,19.57-27.65,38.4q-4.28,4.26-8.79,8.07a4,4,0,0,1-5.55-.36ZM213.92,210.62a8,8,0,1,1-11.84,10.76L180,197.13A127.21,127.21,0,0,1,128,208c-34.88,0-66.57-13.26-91.66-38.34C17.51,150.83,9,132.05,8.69,131.26a8,8,0,0,1,0-6.5C9,124,17.51,105.18,36.34,86.35a135,135,0,0,1,25-19.78L42.08,45.38A8,8,0,1,1,53.92,34.62Zm-65.49-48.25-52.69-58a40,40,0,0,0,52.69,58Z\"/>", "user": "<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>", "lock-key": "<path d=\"M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm-72,78.63V184a8,8,0,0,1-16,0V158.63a24,24,0,1,1,16,0ZM160,80H96V56a32,32,0,0,1,64,0Z\"/>", "question": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z\"/>", "sign-out": "<path d=\"M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z\"/>", "arrow-left": "<path d=\"M224,128a8,8,0,0,1-8,8H120v64a8,8,0,0,1-13.66,5.66l-72-72a8,8,0,0,1,0-11.32l72-72A8,8,0,0,1,120,56v64h96A8,8,0,0,1,224,128Z\"/>", "arrow-right": "<path d=\"M221.66,133.66l-72,72A8,8,0,0,1,136,200V136H40a8,8,0,0,1,0-16h96V56a8,8,0,0,1,13.66-5.66l72,72A8,8,0,0,1,221.66,133.66Z\"/>", "timer": "<path d=\"M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm45.66,61.66-40,40a8,8,0,0,1-11.32-11.32l40-40a8,8,0,0,1,11.32,11.32ZM96,16a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,16Z\"/>", "list-numbers": "<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM56.84,75.58a8,8,0,0,1,3.58-10.74l16-8A8,8,0,0,1,88,64v48a8,8,0,0,1-16,0V76.94l-4.42,2.22A8,8,0,0,1,56.84,75.58ZM92,180a8,8,0,0,1,0,16H68a8,8,0,0,1-6.4-12.8l21.67-28.89A3.92,3.92,0,0,0,84,152a4,4,0,0,0-7.77-1.33,8,8,0,0,1-15.09-5.34,20,20,0,1,1,35,18.53L84,180Zm100,4H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Zm0-48H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Zm0-48H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Z\"/>", "repeat-once": "<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Zm-88,40a8,8,0,0,0,8-8V104a8,8,0,0,0-11.58-7.16l-16,8a8,8,0,1,0,7.16,14.31l4.42-2.21V152A8,8,0,0,0,136,160Z\"/>", "compass": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>", "chart-bar": "<path d=\"M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1,0-16h8V136a8,8,0,0,1,8-8H72a8,8,0,0,1,8,8v64H96V88a8,8,0,0,1,8-8h32a8,8,0,0,1,8,8V200h16V40a8,8,0,0,1,8-8h40a8,8,0,0,1,8,8V200h8A8,8,0,0,1,232,208Z\"/>", "flag-checkered": "<path d=\"M227.32,48.75A8,8,0,0,0,218.76,50c-28,24.22-51.72,12.48-79.21-1.13C111.07,34.76,78.78,18.79,42.76,50h0A8,8,0,0,0,40,56V224a8,8,0,0,0,16,0V179.77c26.79-21.16,49.87-9.75,76.45,3.41,16.4,8.11,34.06,16.85,53,16.85,13.93,0,28.54-4.75,43.82-18a8,8,0,0,0,2.76-6V56A8,8,0,0,0,227.32,48.75ZM56,160.44V109.88c16.85-11.28,32.64-11.59,48-7.34v51.74C88.87,150.47,72.87,150.71,56,160.44ZM104,50.87c9.25,2.83,18.61,7.45,28.45,12.32,11.26,5.57,23.11,11.43,35.55,14.56v51.74c15.35,4.25,31.14,3.94,48-7.35v50.11c-16.87,13.32-32.27,13.72-48,8.91V129.49c-21.62-6-42.38-21-64-26.95Z\"/>", "check-circle": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z\"/>", "circle": "<path d=\"M232,128A104,104,0,1,1,128,24,104.13,104.13,0,0,1,232,128Z\"/>", "x": "<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM181.66,170.34a8,8,0,0,1-11.32,11.32L128,139.31,85.66,181.66a8,8,0,0,1-11.32-11.32L116.69,128,74.34,85.66A8,8,0,0,1,85.66,74.34L128,116.69l42.34-42.35a8,8,0,0,1,11.32,11.32L139.31,128Z\"/>", "check": "<path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z\"/>", "file-pdf": "<path d=\"M44,120H212a4,4,0,0,0,4-4V88a8,8,0,0,0-2.34-5.66l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40v76A4,4,0,0,0,44,120ZM152,44l44,44H152Zm72,108.53a8.18,8.18,0,0,1-8.25,7.47H192v16h15.73a8.17,8.17,0,0,1,8.25,7.47,8,8,0,0,1-8,8.53H192v15.73a8.17,8.17,0,0,1-7.47,8.25,8,8,0,0,1-8.53-8V152a8,8,0,0,1,8-8h32A8,8,0,0,1,224,152.53ZM64,144H48a8,8,0,0,0-8,8v55.73A8.17,8.17,0,0,0,47.47,216,8,8,0,0,0,56,208v-8h7.4c15.24,0,28.14-11.92,28.59-27.15A28,28,0,0,0,64,144Zm-.35,40H56V160h8a12,12,0,0,1,12,13.16A12.25,12.25,0,0,1,63.65,184ZM128,144H112a8,8,0,0,0-8,8v56a8,8,0,0,0,8,8h15.32c19.66,0,36.21-15.48,36.67-35.13A36,36,0,0,0,128,144Zm-.49,56H120V160h8a20,20,0,0,1,20,20.77C147.58,191.59,138.34,200,127.51,200Z\"/>", "users": "<path d=\"M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z\"/>", "chart-pie-slice": "<path d=\"M100,116.43a8,8,0,0,0,4-6.93v-72A8,8,0,0,0,93.34,30,104.06,104.06,0,0,0,25.73,147a8,8,0,0,0,4.52,5.81,7.86,7.86,0,0,0,3.35.74,8,8,0,0,0,4-1.07ZM88,49.62v55.26L40.12,132.51C40,131,40,129.48,40,128A88.12,88.12,0,0,1,88,49.62ZM232,128A104,104,0,0,1,38.32,180.7a8,8,0,0,1,2.87-11L120,123.83V32a8,8,0,0,1,8-8,104.05,104.05,0,0,1,89.74,51.48c.11.16.21.32.31.49s.2.37.29.55A103.34,103.34,0,0,1,232,128Z\"/>", "trophy": "<path d=\"M232,64H208V48a8,8,0,0,0-8-8H56a8,8,0,0,0-8,8V64H24A16,16,0,0,0,8,80V96a40,40,0,0,0,40,40h3.65A80.13,80.13,0,0,0,120,191.61V216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V191.58c31.94-3.23,58.44-25.64,68.08-55.58H208a40,40,0,0,0,40-40V80A16,16,0,0,0,232,64ZM48,120A24,24,0,0,1,24,96V80H48v32q0,4,.39,8ZM232,96a24,24,0,0,1-24,24h-.5a81.81,81.81,0,0,0,.5-8.9V80h24Z\"/>", "warning-circle": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,104a12,12,0,1,1,12-12A12,12,0,0,1,128,184Z\"/>", "buildings": "<path d=\"M239.73,208H224V96a16,16,0,0,0-16-16H164a4,4,0,0,0-4,4V208H144V32.41a16.43,16.43,0,0,0-6.16-13,16,16,0,0,0-18.72-.69L39.12,72A16,16,0,0,0,32,85.34V208H16.27A8.18,8.18,0,0,0,8,215.47,8,8,0,0,0,16,224H240a8,8,0,0,0,8-8.53A8.18,8.18,0,0,0,239.73,208ZM76,184a8,8,0,0,1-8.53,8A8.18,8.18,0,0,1,60,183.72V168.27A8.19,8.19,0,0,1,67.47,160,8,8,0,0,1,76,168Zm0-56a8,8,0,0,1-8.53,8A8.19,8.19,0,0,1,60,127.72V112.27A8.19,8.19,0,0,1,67.47,104,8,8,0,0,1,76,112Zm40,56a8,8,0,0,1-8.53,8,8.18,8.18,0,0,1-7.47-8.26V168.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Zm0-56a8,8,0,0,1-8.53,8,8.19,8.19,0,0,1-7.47-8.26V112.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Z\"/>", "user-circle": "<path d=\"M172,120a44,44,0,1,1-44-44A44.05,44.05,0,0,1,172,120Zm60,8A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88.09,88.09,0,0,0-91.47-87.93C77.43,41.89,39.87,81.12,40,128.25a87.65,87.65,0,0,0,22.24,58.16A79.71,79.71,0,0,1,84,165.1a4,4,0,0,1,4.83.32,59.83,59.83,0,0,0,78.28,0,4,4,0,0,1,4.83-.32,79.71,79.71,0,0,1,21.79,21.31A87.62,87.62,0,0,0,216,128Z\"/>", "clock-countdown": "<path d=\"M208,96a12,12,0,1,1,12,12A12,12,0,0,1,208,96ZM196,72a12,12,0,1,0-12-12A12,12,0,0,0,196,72Zm28.66,56a8,8,0,0,0-8.63,7.31A88.12,88.12,0,1,1,120.66,40,8,8,0,0,0,119.34,24,104.12,104.12,0,1,0,232,136.66,8,8,0,0,0,224.66,128ZM128,56a72,72,0,1,1-72,72A72.08,72.08,0,0,1,128,56Zm-8,72a8,8,0,0,0,8,8h48a8,8,0,0,0,0-16H136V80a8,8,0,0,0-16,0Zm40-80a12,12,0,1,0-12-12A12,12,0,0,0,160,48Z\"/>", "seal-check": "<path d=\"M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-52.2,6.84-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z\"/>"};
+PH["arrow-right-bold"]='<path d="M224.49,136.49l-72,72a12,12,0,0,1-17-17L187,140H40a12,12,0,0,1,0-24H187L135.51,64.48a12,12,0,0,1,17-17l72,72A12,12,0,0,1,224.49,136.49Z"/>';
+PH.close='<path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/>';
+PH.plus='<path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm-24,104H136v48a8,8,0,0,1-16,0V136H72a8,8,0,0,1,0-16h48V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/>';
+const ic=(n,s=18,cls="")=>(s=Math.round(s*.82),`<svg class="ph ${cls}" width="${s}" height="${s}" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">${PH[n]}</svg>`);
+const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">${PH[n]}</svg>`);
+</script>
+</head><body>
+<div id="loginScreen" class="anim">
+<div class="wrap">
+  <section class="brand" aria-label="О конкурсе">
+    <svg class="radar" viewBox="0 0 800 900" preserveAspectRatio="xMaxYMax slice" aria-hidden="true">
+      <g class="airmap" aria-hidden="true">
+      <g class="grat" stroke="#ffffff" stroke-opacity=".10" stroke-width="1" stroke-dasharray="2 6">
+      <line x1="-200" y1="1011.2" x2="1200" y2="1011.2"/>
+      <line x1="-200" y1="879.2" x2="1200" y2="879.2"/>
+      <line x1="-200" y1="747.2" x2="1200" y2="747.2"/>
+      <line x1="-200" y1="615.2" x2="1200" y2="615.2"/>
+      <line x1="-200" y1="483.2" x2="1200" y2="483.2"/>
+      <line x1="-200" y1="351.2" x2="1200" y2="351.2"/>
+      <line x1="-200" y1="219.2" x2="1200" y2="219.2"/>
+      <line x1="-200" y1="87.2" x2="1200" y2="87.2"/>
+      <line x1="-200" y1="-44.8" x2="1200" y2="-44.8"/>
+      <line x1="-200" y1="-176.8" x2="1200" y2="-176.8"/>
+      <line x1="-156.2" y1="-100" x2="-156.2" y2="1000"/>
+      <line x1="-8.6" y1="-100" x2="-8.6" y2="1000"/>
+      <line x1="139.0" y1="-100" x2="139.0" y2="1000"/>
+      <line x1="286.7" y1="-100" x2="286.7" y2="1000"/>
+      <line x1="434.3" y1="-100" x2="434.3" y2="1000"/>
+      <line x1="581.9" y1="-100" x2="581.9" y2="1000"/>
+      <line x1="729.5" y1="-100" x2="729.5" y2="1000"/>
+      <line x1="877.2" y1="-100" x2="877.2" y2="1000"/>
+      <line x1="1024.8" y1="-100" x2="1024.8" y2="1000"/>
+      <line x1="1172.4" y1="-100" x2="1172.4" y2="1000"/>
+      </g><g class="gratlbl" fill="#ffffff" fill-opacity=".35" font-size="11" font-weight="500" letter-spacing=".04em">
+      <text x="792" y="610.2" text-anchor="end">52°N</text>
+      <text x="792" y="478.2" text-anchor="end">54°N</text>
+      <text x="792" y="346.2" text-anchor="end">56°N</text>
+      <text x="792" y="214.2" text-anchor="end">58°N</text>
+      <text x="792" y="82.2" text-anchor="end">60°N</text>
+      <text x="291.7" y="890">84°E</text>
+      <text x="439.3" y="890">88°E</text>
+      <text x="586.9" y="890">92°E</text>
+      <text x="734.5" y="890">96°E</text>
+      </g>
+      <g class="routes" fill="none" stroke="#68aee0" stroke-opacity=".55" stroke-width="1.2">
+      <path id="rt-UNKL-UNNT" pathLength="1" style="--i:0" d="M600.0 340.0 L236.8 416.6"/>
+      <path id="rt-UNKL-UNTT" pathLength="1" style="--i:1" d="M600.0 340.0 L331.3 326.1"/>
+      <path id="rt-UNKL-UNEE" pathLength="1" style="--i:2" d="M600.0 340.0 L364.5 399.4"/>
+      <path id="rt-UNKL-UNAA" pathLength="1" style="--i:3" d="M600.0 340.0 L559.4 500.4"/>
+      <path id="rt-UNKL-UNKY" pathLength="1" style="--i:4" d="M600.0 340.0 L670.5 637.0"/>
+      <path id="rt-UNKL-UNII" pathLength="1" style="--i:5" d="M600.0 340.0 L586.0 188.2"/>
+      <path id="rt-UNKL-UIBB" pathLength="1" style="--i:6" d="M600.0 340.0 L939.9 326.8"/>
+      <path id="rt-UNKL-UIII" pathLength="1" style="--i:7" d="M600.0 340.0 L1039.2 597.4"/>
+      <path id="rt-UNNT-UNTT" pathLength="1" style="--i:8" d="M236.8 416.6 L331.3 326.1"/>
+      <path id="rt-UNNT-UNBB" pathLength="1" style="--i:9" d="M236.8 416.6 L269.7 525.5"/>
+      <path id="rt-UNEE-UNWW" pathLength="1" style="--i:10" d="M364.5 399.4 L393.0 495.8"/>
+      <path id="rt-UNWW-UNAA" pathLength="1" style="--i:11" d="M393.0 495.8 L559.4 500.4"/>
+      <path id="rt-UNTT-UNII" pathLength="1" style="--i:12" d="M331.3 326.1 L586.0 188.2"/>
+      <path id="rt-UNNT-UNEE" pathLength="1" style="--i:13" d="M236.8 416.6 L364.5 399.4"/>
+      </g><g class="blips" fill="#ffffff">
+      <circle r="2.6"><animateMotion dur="14s" begin="2s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNNT"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="17s" begin="3.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UIBB"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="11s" begin="5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNII"/></animateMotion></circle>
+      <circle r="2.6"><animateMotion dur="12s" begin="6s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#rt-UNKL-UNAA"/></animateMotion></circle>
+      </g><g class="apts">
+      <g class="apt main" style="--i:0"><text x="614.0" y="328.0" fill="#ffffff" font-size="14" font-weight="700" letter-spacing=".12em">UNKL</text></g>
+      <g class="apt" style="--i:1"><circle cx="236.8" cy="416.6" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="227.8" y="432.6" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNNT</text></g>
+      <g class="apt" style="--i:2"><circle cx="331.3" cy="326.1" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="341.3" y="319.1" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNTT</text></g>
+      <g class="apt" style="--i:3"><circle cx="364.5" cy="399.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="374.5" y="392.4" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNEE</text></g>
+      <g class="apt" style="--i:4"><circle cx="559.4" cy="500.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="569.4" y="493.4" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNAA</text></g>
+      <g class="apt" style="--i:5"><circle cx="670.5" cy="637.0" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="680.5" y="630.0" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNKY</text></g>
+      <g class="apt" style="--i:6"><circle cx="586.0" cy="188.2" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="596.0" y="181.2" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNII</text></g>
+      <g class="apt" style="--i:7"><circle cx="939.9" cy="326.8" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="929.9" y="319.8" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UIBB</text></g>
+      <g class="apt" style="--i:8"><circle cx="1039.2" cy="597.4" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="1029.2" y="590.4" text-anchor="end" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UIII</text></g>
+      <g class="apt" style="--i:9"><circle cx="269.7" cy="525.5" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="279.7" y="518.5" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNBB</text></g>
+      <g class="apt" style="--i:10"><circle cx="393.0" cy="495.8" r="3.2" fill="#0b3f86" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.2"/><text x="403.0" y="488.8" text-anchor="start" fill="#ffffff" fill-opacity=".62" font-size="11" font-weight="500" letter-spacing=".1em">UNWW</text></g>
+      </g></g>
+      <g fill="none" stroke="#ffffff">
+        <line class="ax" pathLength="1" x1="0" y1="340" x2="800" y2="340" stroke-opacity=".35" stroke-width="1"/>
+        <line class="ax" pathLength="1" x1="600" y1="0" x2="600" y2="900" stroke-opacity=".35" stroke-width="1"/>
+        <circle class="rg" cx="600" cy="340" r="110" stroke-opacity=".28" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="220" stroke-opacity=".22" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="330" stroke-opacity=".16" stroke-width="1.5"/>
+        <circle class="rg" cx="600" cy="340" r="440" stroke-opacity=".11" stroke-width="1.5"/>
+      </g>
+      <g class="swwrap"><path class="sw" d="M600 340 L600 -100 A440 440 0 0 1 981 120 Z" fill="#68aee0" fill-opacity=".16"/></g>
+      <circle class="ping" cx="600" cy="340" r="5" fill="none" stroke="#ffffff" stroke-width="1"/><circle cx="600" cy="340" r="5" fill="#ffffff"/>
+    </svg>
+    <div class="org">ФГУП «Госкорпорация по ОрВД»</div>
+    <div class="hero">
+      <div class="eyebrow">Тестирование участников</div>
+      <h1><span><i>Конкурс</i></span><span><i>профессионального</i></span><span><i>мастерства</i></span><span><i>службы ЭРТОС</i></span></h1>
+      <p class="lead">Войдите под своей учётной записью участника, чтобы пройти тестирование.</p>
+    </div>
+  </section>
+
+  <div class="side">
+    <main>
+      <form class="card" id="form" novalidate>
+        <img class="logo" src="../../design/logos/emblem-ru.svg" alt="Госкорпорация по ОрВД">
+        <h2>Вход в систему тестирования</h2>
+        <p class="sub">Используйте логин и пароль, выданные организатором конкурса.</p>
+
+        <div class="alert bad" id="alert" role="alert"></div>
+
+        <div class="field">
+          <label for="login">Логин</label>
+          <div class="input has-lead"><span class="lic"><script>document.write(ic("user",20))</script></span><input id="login" name="login" type="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="Ваш логин" aria-describedby="login-err"></div>
+          <div class="err" id="login-err">Введите логин</div>
+        </div>
+
+        <div class="field">
+          <label for="password">Пароль</label>
+          <div class="input has-lead"><span class="lic"><script>document.write(ic("lock-key",20))</script></span>
+            <input id="password" name="password" type="password" autocomplete="current-password" aria-describedby="password-err" style="padding-right:56px">
+            <button class="toggle" type="button" id="toggle" aria-controls="password" aria-pressed="false" aria-label="Показать пароль"><morph-icon id="eyeIco" size="18"></morph-icon></button>
+          </div>
+          <div class="err" id="password-err">Введите пароль</div>
+        </div>
+
+        <button class="btn" type="submit" id="submit"><span id="submitTxt">Войти</span><script>document.write(ic("arrow-right-bold",18))</script></button>
+
+        <p class="help"><span class="hi"><script>document.write(ic("question",20))</script></span><span><b>Прототип:</b> любой логин и пароль — тестирование, логин <b>admin</b> — админ-панель. Участник, добавленный в админке, входит со своими логином и паролем.<br><br><b>Нет логина или не получается войти?</b><br>Обратитесь к организатору конкурса в вашем филиале.</span></p>
+      </form>
+    </main>
+    <footer>
+      <span>© ФГУП «Госкорпорация по ОрВД»</span>
+      <a href="https://gkovd.ru" target="_blank" rel="noopener">GKOVD.RU</a>
+    </footer>
+  </div>
+</div>
+
+</div>
+<!-- ═════════ A ═════════ -->
+<section class="screen" id="tst">
+  <header class="top">
+    <img src="../../design/logos/emblem-ru.svg" alt="Госкорпорация по ОрВД">
+    <div class="ttl">Конкурс профессионального мастерства<small>служба ЭРТОС · тестирование</small></div>
+    <div class="sp"></div>
+    <div class="user"><span class="muted" id="uName">Иванов И. И.</span><div class="ava" id="uAva">ИИ</div><button class="btn ghost logout" style="height:36px;padding:0 14px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+  </header>
+  <div class="wrap" id="A-root"></div>
+</section>
+
+<section class="screen" id="adm">
+  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="seg" id="adm-tabs" role="group" aria-label="Раздел админ-панели"><button data-t="an" aria-pressed="true">Аналитика</button><button data-t="pp" aria-pressed="false">Участники <span id="tab-n"></span></button></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+  <div class="wrapc">
+    <div id="view-an">
+    <div class="kpis" id="C-kpis"></div>
+    <div class="twocol">
+      <div class="card mx"><h2><script>document.write(ic("chart-bar",18))</script>Матрица ответов</h2><div class="tiny">Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.</div>
+        <div class="matrix" id="C-mx"></div>
+        <div class="legend"><span style="color:var(--bl)"><script>document.write(ic("check",16))</script> <b style="color:var(--ink2);font-weight:400">Верно</b></span><span style="color:#e0444b"><script>document.write(ic("x",16))</script> <b style="color:var(--ink2);font-weight:400">Неверно</b></span><span><i style="background:#eef0f4"></i>Нет ответа</span></div></div>
+      <div class="side">
+        <div class="card"><h2><script>document.write(ic("user-circle",18))</script>Ответ участника</h2><div class="detail" id="C-detail"><span class="tiny">Выберите клетку в матрице</span></div></div>
+        <div class="card"><h2><script>document.write(ic("warning-circle",18))</script>Самые сложные вопросы</h2><div class="hard" id="C-hard"></div></div>
+        <div class="card"><h2><script>document.write(ic("buildings",18))</script>Средний балл по филиалам</h2><div class="branch" id="C-branch"></div></div>
+      </div>
+    </div>
+    </div>
+    <div id="view-pp" hidden>
+    <section class="card people" aria-labelledby="u-h">
+      <div class="phead"><h2 id="u-h"><script>document.write(ic("users",18))</script>Участники конкурса<span class="cnt" id="u-count"></span></h2><input class="fi sm" id="u-q" type="search" placeholder="Поиск по ФИО или логину" aria-label="Поиск участника" autocomplete="off"><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button></div>
+      <div class="uhead" aria-hidden="true"><span>Участник</span><span>Дата рождения</span><span>ФАП № 38</span><span>ФАП № 178</span><span></span></div>
+      <div class="ulist" id="u-list" role="list"></div>
+    </section>
+    </div>
+    <p class="demo" style="margin-top:12px">Демо-данные макета.</p>
+  </div>
+</section>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Ответы участника"><button class="x" id="dx" aria-label="Закрыть"><script>document.write(ic("close",20))</script></button><header id="dh"></header><div class="body" id="db"></div></aside>
+<aside class="drawer" id="addDrawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Новый участник"><button class="x" id="ax" aria-label="Закрыть"><script>document.write(ic("close",20))</script></button><header><div class="eyebrow tiny">Участники</div><div class="dh-name">Новый участник</div></header><div class="body" id="ab"></div></aside>
+<script>
+/* ── банк вопросов: ПРИМЕРЫ для макета; замените на утверждённый банк ── */
+const BANK={
+ "38":{no:"38",short:"ФАП № 38",name:"Правила радиотехнического обеспечения полетов воздушных судов, включая обеспечение авиационной электросвязи",doc:"Приказ Минтранса России от 28.01.2026 № 38",qs:[
+  {q:"Какая частота используется в качестве аварийной частоты подвижной авиационной электросвязи?",o:["118,0 МГц","121,5 МГц","124,0 МГц","129,0 МГц"]},
+  {q:"На какой частоте организуется единая командно-стартовая сеть?",o:["121,5 МГц","123,1 МГц","124,0 МГц","127,5 МГц"]},
+  {q:"Какая частота определена как резервная?",o:["129,0 МГц","121,5 МГц","118,1 МГц","136,0 МГц"]},
+  {q:"С какой даты вступают в силу ФАП, утверждённые приказом № 38?",o:["1 января 2026 г.","1 марта 2026 г.","5 апреля 2026 г.","1 сентября 2026 г."]},
+  {q:"Какой раздел ФАП устанавливает порядок подготовки и допуска к работе персонала, эксплуатирующего радиотехническое оборудование?",o:["Раздел I","Раздел II","Раздел III","Раздел V"]}]},
+ "178":{no:"178",short:"ФАП № 178",name:"Требования к радиотехническому оборудованию и оборудованию авиационной электросвязи, используемым для обслуживания воздушного движения",doc:"Приказ Минтранса России от 22.05.2024 № 178",qs:[
+  {q:"Из каких радиомаяков состоит радиомаячная система посадки (РМС)?",o:["РМА и РМД","КРМ и ГРМ","ОРЛ-Т и ВРЛ","ПРС и МРМ"]},
+  {q:"Что обозначает сокращение ВРЛ?",o:["Всенаправленный радиолокатор","Вторичный радиолокатор","Выносной радиолокационный пост","Вертолётный радиолокатор"]},
+  {q:"С какой даты вступили в силу ФАП, утверждённые приказом № 178?",o:["1 марта 2024 г.","30 мая 2024 г.","1 сентября 2024 г.","1 января 2025 г."]},
+  {q:"В каком разделе ФАП установлены требования к обзорным радиолокаторам ОРЛ-Т и ОРЛ-А?",o:["I. Общие положения","II. Требования к радиотехническому оборудованию","III. Требования к оборудованию электросвязи","IV. Заключительные положения"]},
+  {q:"К какому типу оборудования относится ЛККС?",o:["Средства авиационной электросвязи","Наземное оборудование ГНСС","Метеорологическое оборудование","Светосигнальное оборудование"]}]}
+};
+const KEYS="АБВГ";
+const DURATION=40*60;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const radar=(cls)=>`<svg viewBox="0 0 200 200" class="${cls||""}" aria-hidden="true"><g fill="none" stroke="#fff" stroke-opacity=".7"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="90"/><path d="M100 0V200M0 100H200"/></g></svg>`;
+
+/* ═════ A ═════ */
+const A={fap:null,i:0,ans:{},end:0,qs:0,S:{},timer:null,root:$("#A-root")};
+let CUR=null,lastAdd=null;
+const greet=()=>CUR?esc([CUR.first,CUR.mid].filter(Boolean).join(" ")):"Иван Иванович";
+const left=()=>Math.max(0,Math.round((A.end-Date.now())/1000));
+function aChoose(){
+ A.root.innerHTML=`<div class="hello rise"><div class="eyebrow tiny">Шаг 1 из 2 · выбор теста</div><h1>Добрый день, ${greet()}</h1><p class="muted">Выберите федеральные авиационные правила, по которым будете проходить тестирование.</p></div>
+ <div class="faps">${["38","178"].map((k,n)=>{const b=BANK[k];return `<button class="fap f${k} rise" style="animation-delay:${.08+n*.08}s" data-fap="${k}" ${A.S[k]&&A.S[k].done?"disabled":""}>${radar()}<span class="go">${ic("arrow-right",22)}</span><div><div class="eyebrow" style="opacity:.8">Федеральные авиационные правила</div><div class="no">№ ${b.no}</div><div class="nm">${b.name}</div></div><div class="meta"><span>${ic("list-numbers",14)} ${b.qs.length} вопросов</span><span>${ic("timer",14)} 40 минут</span>${A.S[k]&&A.S[k].done?`<span>${ic("check-circle",14)} Пройден</span>`:`<span>${ic("repeat-once",14)} 1 попытка</span>`}</div></button>`}).join("")}</div>
+ <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>40 минут на один тест</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
+ A.root.querySelectorAll(".fap").forEach(b=>b.onclick=()=>{const k=b.dataset.fap;const isNew=!A.S[k];const s=A.S[k]||(A.S[k]={ans:{},end:Date.now()+DURATION*1000,done:false});if(isNew)trackStart(k);A.fap=k;A.i=0;A.ans=s.ans;A.end=s.end;aStart()});
+}
+function aStart(){clearInterval(A.timer);if(left()===0){aRes();return}A.timer=setInterval(()=>{const t=$("#A-time");if(t)t.textContent=fmt(left());if(left()===0)aRes()},1000);aQ()}
+function aQ(){
+ A.qs=Date.now();const b=BANK[A.fap],q=b.qs[A.i],n=b.qs.length,done=Object.keys(A.ans).length;
+ A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",15)} <span id="A-time">${fmt(left())}</span></span></div>
+ <div class="bar"><i style="width:${done/n*100}%"></i></div><p class="tiny" style="margin:8px 0 18px">Отвечено ${done} из ${n}</p>
+ <div class="card qcard rise"><div class="qnum">ВОПРОС ${A.i+1} ИЗ ${n}</div><div class="qtext">${esc(q.q)}</div>
+ <div class="opts" role="radiogroup">${q.o.map((o,j)=>`<button class="opt" role="radio" aria-checked="${A.ans[A.i]===j}" data-j="${j}"><span class="k">${KEYS[j]}</span><span class="ot">${esc(o)}</span><morph-icon class="chk" size="18"></morph-icon></button>`).join("")}</div>
+ <div class="nav"><button class="btn ghost" id="A-prev" ${A.i?"":"disabled"}>Назад</button><button class="btn" id="A-next">${A.i<n-1?"Следующий вопрос "+ic("arrow-right",18):"Завершить тест "+ic("flag-checkered",18)}</button></div>
+ <div class="dots">${b.qs.map((_,k)=>`<button data-k="${k}" class="${k===A.i?"cur":A.ans[k]!=null?"ans":""}">${k+1}</button>`).join("")}</div>
+ <p class="demo-note">Вопросы — примеры для макета по тексту ФАП. Банк вопросов утверждает организатор.</p></div>`;
+ const opts=[...A.root.querySelectorAll(".opt")];
+ opts.forEach(o=>{o.querySelector(".chk").icon=PI(A.ans[A.i]===+o.dataset.j?"check-circle":"circle")});
+ opts.forEach((o,j)=>{o.tabIndex=(A.ans[A.i]===j||(A.ans[A.i]==null&&j===0))?0:-1;o.onkeydown=e=>{const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();const t=opts[(j+d+opts.length)%opts.length];t.focus();t.click()}});
+ opts.forEach(o=>o.onclick=()=>{const j=+o.dataset.j;if(A.ans[A.i]===j)return;const prev=A.ans[A.i];A.ans[A.i]=j;opts.forEach(x=>x.tabIndex=+x.dataset.j===j?0:-1);trackAns(j);
+  opts.forEach(x=>{const on=+x.dataset.j===j;x.setAttribute("aria-checked",on);if(on)x.querySelector(".chk").morphTo(PI("check-circle"));else if(+x.dataset.j===prev)x.querySelector(".chk").morphTo(PI("circle"))});
+  const d=Object.keys(A.ans).length;A.root.querySelector(".bar i").style.width=d/n*100+"%";A.root.querySelector(".bar + .tiny").textContent=`Отвечено ${d} из ${n}`;A.root.querySelector(`.dots [data-k="${A.i}"]`).className="cur"});
+ A.root.querySelectorAll(".dots button").forEach(d=>d.onclick=()=>{A.i=+d.dataset.k;aQ()});
+ $("#A-back").onclick=()=>{clearInterval(A.timer);aChoose()};
+ $("#A-prev").onclick=()=>{A.i--;aQ()};
+ $("#A-next").onclick=()=>{if(A.i<n-1){A.i++;aQ()}else aRes()};
+}
+function aRes(){clearInterval(A.timer);A.S[A.fap].done=true;trackDone();const rest=["38","178"].filter(k=>!A.S[k]||!A.S[k].done);const b=BANK[A.fap],n=b.qs.length,done=Object.keys(A.ans).length;
+ A.root.innerHTML=`<div class="card res rise"><div class="resic">${ic("seal-check",44)}</div><div class="eyebrow tiny">${b.short} · тест завершён</div><div class="big" style="margin:18px 0 8px">${done}/${n}</div><p class="muted">ответов отправлено. Результат проверит и опубликует организатор конкурса.</p><p class="tiny">Затрачено времени: ${fmt(DURATION-left())}</p><div style="display:flex;gap:12px;justify-content:center;margin-top:24px">${rest.length?`<button class="btn" id="A-again">Пройти второй тест</button>`:`<p class="tiny">Все тесты пройдены</p>`}</div></div>`;
+ const ag=$("#A-again");if(ag)ag.onclick=aChoose;}
+aChoose();
+
+/* ── ДЕМО-ДАННЫЕ ── */
+const NQ=20;
+const SAMPLE={
+ "38":[["Какая частота используется в качестве аварийной частоты подвижной авиационной электросвязи?",["118,0 МГц","121,5 МГц","124,0 МГц","129,0 МГц"],1],
+  ["На какой частоте организуется единая командно-стартовая сеть?",["121,5 МГц","123,1 МГц","124,0 МГц","127,5 МГц"],2],
+  ["Какая частота определена как резервная?",["129,0 МГц","121,5 МГц","118,1 МГц","136,0 МГц"],0],
+  ["С какой даты вступают в силу ФАП, утверждённые приказом № 38?",["1 января 2026 г.","1 марта 2026 г.","5 апреля 2026 г.","1 сентября 2026 г."],2],
+  ["Какой раздел ФАП устанавливает порядок подготовки и допуска персонала?",["Раздел I","Раздел II","Раздел III","Раздел V"],2]],
+ "178":[["Из каких радиомаяков состоит РМС?",["РМА и РМД","КРМ и ГРМ","ОРЛ-Т и ВРЛ","ПРС и МРМ"],1],
+  ["Что обозначает сокращение ВРЛ?",["Всенаправленный радиолокатор","Вторичный радиолокатор","Выносной радиолокационный пост","Вертолётный радиолокатор"],1],
+  ["С какой даты вступили в силу ФАП, утверждённые приказом № 178?",["1 марта 2024 г.","30 мая 2024 г.","1 сентября 2024 г.","1 января 2025 г."],2],
+  ["В каком разделе установлены требования к ОРЛ-Т и ОРЛ-А?",["I. Общие положения","II. Требования к радиотехническому оборудованию","III. Требования к оборудованию электросвязи","IV. Заключительные положения"],1],
+  ["К какому типу оборудования относится ЛККС?",["Средства авиационной электросвязи","Наземное оборудование ГНСС","Метеорологическое оборудование","Светосигнальное оборудование"],1]]};
+const Q=f=>Array.from({length:NQ},(_,k)=>SAMPLE[f][k]?{q:SAMPLE[f][k][0],o:SAMPLE[f][k][1],c:SAMPLE[f][k][2]}:{q:`Вопрос № ${k+1} из банка вопросов ФАП № ${f}`,o:["Вариант А","Вариант Б","Вариант В","Вариант Г"],c:k%4});
+const QS={"38":Q("38"),"178":Q("178")};
+const BR=["Аэронавигация Центральной Сибири","Аэронавигация Урала","Аэронавигация Северо-Запада","Аэронавигация Дальнего Востока","Аэронавигация Юга"];
+const NAMES=["Иванов Иван Иванович","Петров Алексей Сергеевич","Смирнова Елена Викторовна","Кузнецов Дмитрий Андреевич","Соколов Максим Николаевич","Попова Ольга Геннадьевна","Лебедев Кирилл Павлович","Новиков Сергей Владимирович","Морозов Артём Александрович","Волкова Татьяна Игоревна","Фёдоров Роман Евгеньевич","Егоров Владимир Леонидович"];
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const short=n=>{const p=n.split(" ").filter(Boolean);return p[0]+" "+p[1][0]+"."+(p[2]?" "+p[2][0]+".":"")};
+const ini=n=>{const p=n.split(" ");return p[0][0]+p[1][0]};
+const P=NAMES.map((n,i)=>{const mk=(f,state,cnt)=>{const skill=.55+rnd()*.4;const a=[];for(let k=0;k<NQ;k++){if(k>=cnt){a.push(null);continue}const right=rnd()<skill;const c=QS[f][k].c;a.push({v:right?c:(c+1+Math.floor(rnd()*3))%4,t:20+Math.floor(rnd()*90)})}return{state,a,started:"10:"+String(2+i).padStart(2,"0")}};
+ const s38=i<6?"done":i<9?"live":"none", s178=i<3?"done":i<6?"live":"none";
+ return{id:i,name:n,br:BR[i%BR.length],f:{"38":mk("38",s38,s38==="done"?NQ:s38==="live"?4+Math.floor(rnd()*12):0),"178":mk("178",s178,s178==="done"?NQ:s178==="live"?3+Math.floor(rnd()*12):0)}}});
+const score=(p,f)=>p.f[f].a.reduce((s,x,k)=>s+(x&&x.v===QS[f][k].c?1:0),0);
+const answered=(p,f)=>p.f[f].a.filter(Boolean).length;
+const tsum=(p,f)=>p.f[f].a.reduce((s,x)=>s+(x?x.t:0),0);
+const fmtA=s=>Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
+const overall=p=>{const s=[p.f["38"].state,p.f["178"].state];return s.includes("live")?"live":s.every(x=>x==="done")?"done":s.every(x=>x==="none")?"none":"live"};
+const ST={live:"Проходит",done:"Завершил",none:"Не начал"};
+const L="АБВГ";
+
+/* ═════ участники: добавление и отслеживание ═════ */
+const TR={а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"i",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",э:"e",ю:"yu",я:"ya"};
+const tr=s=>[...s.toLowerCase()].map(c=>TR[c]??c).join("");
+const LS="ertos_participants_v1";
+/* демо-участникам дописываем логин и дату рождения */
+P.forEach(p=>{const n=p.name.split(" ");p.login=tr(n[0])+"."+tr(n[1][0])+tr(n[2][0]);p.birth=(1972+Math.floor(rnd()*26))+"-"+String(1+Math.floor(rnd()*12)).padStart(2,"0")+"-"+String(1+Math.floor(rnd()*28)).padStart(2,"0")});
+/* добавленные вручную участники хранятся в браузере (демо). В рабочей версии — БД, пароль только в виде хэша */
+const saveU=()=>{try{localStorage.setItem(LS,JSON.stringify(P.filter(p=>p.pw!==undefined)))}catch(e){}};
+try{JSON.parse(localStorage.getItem(LS)||"[]").filter(u=>u&&u.name&&u.login&&u.f&&u.f["38"]&&u.f["178"]).forEach(u=>{u.id=P.length;P.push(u)})}catch(e){}
+const findUser=l=>P.find(p=>p.pw!==undefined&&p.login.toLowerCase()===l)||null;
+const dmy=s=>s?s.split("-").reverse().join("."):"—";
+function startSession(u){CUR=u;clearInterval(A.timer);A.S={};if(u)["38","178"].forEach(k=>{if(u.f[k].state==="done")A.S[k]={ans:{},end:0,done:true}})}
+function setUser(){$("#uName").textContent=CUR?short(CUR.name):"Иванов И. И.";$("#uAva").textContent=CUR?ini(CUR.name):"ИИ"}
+function trackStart(k){if(!CUR)return;CUR.f[k]={state:"live",a:Array(NQ).fill(null),started:new Date().toTimeString().slice(0,5)};saveU()}
+function trackAns(j){if(!CUR)return;const f=CUR.f[A.fap];f.state="live";f.a[A.i]={v:j,t:Math.max(1,Math.round((Date.now()-A.qs)/1000))};saveU()}
+function trackDone(){if(!CUR)return;CUR.f[A.fap].state="done";saveU()}
+
+let HL=null;
+function admTab(t){const pp=t==="pp";if(!pp)HL=null;$("#view-an").hidden=pp;$("#view-pp").hidden=!pp;$("#C-fap").hidden=pp;document.querySelectorAll("#adm-tabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.t===t)));if(pp)uRender()}
+document.querySelectorAll("#adm-tabs button").forEach(b=>b.onclick=()=>admTab(b.dataset.t));
+function uRender(){const q=($("#u-q").value||"").trim().toLowerCase();
+ $("#tab-n").textContent="· "+P.length;
+ const rows=[...P].sort((a,b)=>(b.created||0)-(a.created||0)).filter(p=>!q||(p.name+" "+p.login).toLowerCase().includes(q));
+ const cell=(p,f)=>{const x=p.f[f];return `<div class="uc"><span class="ul">ФАП № ${f}</span>${x.state==="none"?`<span class="st none">${ST.none}</span>`:`<span class="st ${x.state}">${ST[x.state]}</span><span class="tiny">${score(p,f)} верно · ${answered(p,f)} отв.</span>`}</div>`};
+ $("#u-count").textContent=P.length;
+ $("#u-list").innerHTML=rows.length?rows.map(p=>{const any=p.f["38"].state!=="none"||p.f["178"].state!=="none";return `<div class="urow${p.id===HL?" hl":""}" role="listitem"><div class="uc nm2"><b>${esc(p.name)}</b><span class="tiny">${esc(p.login)}${p.pw!==undefined?" · добавлен в админке":""}</span></div><div class="uc"><span class="ul">Дата рождения</span>${dmy(p.birth)}</div>${cell(p,"38")}${cell(p,"178")}<div class="uc"><button class="btn ghost" data-id="${p.id}" style="height:36px;padding:0 14px" ${any?"":"disabled"}>Ответы</button></div></div>`}).join(""):`<p class="tiny">Никого не найдено</p>`;
+ $("#u-list").querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openDrawer(P[+b.dataset.id]));
+ const hl=$("#u-list .hl");if(hl&&!$("#view-pp").hidden)hl.scrollIntoView({block:"nearest"})}
+$("#u-q").oninput=uRender;
+document.querySelectorAll(".js-add").forEach(b=>b.onclick=openAdd);
+
+const genPass=()=>{const c="abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789",a=new Uint32Array(10);crypto.getRandomValues(a);return [...a].map(x=>c[x%c.length]).join("")};
+const FLD=(id,lab,inner)=>`<div class="fld"><label for="${id}">${lab}</label>${inner||`<input class="fi" id="${id}" autocomplete="off" aria-describedby="${id}-e">`}<div class="ferr" id="${id}-e" role="alert"></div></div>`;
+function addForm(){const today=new Date().toISOString().slice(0,10);
+ return `<form id="addForm" novalidate autocomplete="off"><p class="muted" style="margin:0 0 18px;font-size:14px">После сохранения вы увидите логин и пароль, чтобы передать их участнику. Статус прохождения тестов появится в списке участников.</p>
+ ${FLD("f-last","Фамилия")}${FLD("f-first","Имя")}${FLD("f-mid","Отчество <span class=\"optn\">необязательно</span>")}
+ ${FLD("f-birth","Дата рождения",`<input class="fi" id="f-birth" type="date" min="1920-01-01" max="${today}" aria-describedby="f-birth-e">`)}
+ ${FLD("f-login","Логин",`<input class="fi" id="f-login" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="f-login-e">`)}
+ ${FLD("f-pass","Пароль",`<div class="inp"><input class="fi" id="f-pass" type="password" autocomplete="new-password" style="padding-right:56px" aria-describedby="f-pass-e"><button type="button" class="eye" id="f-eye" aria-label="Показать пароль" aria-pressed="false">${ic("eye",20)}</button></div><button type="button" class="btn ghost" id="f-gen" style="height:38px;margin-top:8px">Сгенерировать пароль</button>`)}
+ <button class="btn" type="submit" style="width:100%;height:52px;margin-top:6px">Добавить участника</button></form>`}
+function openAdd(){closeD();lastAdd=document.activeElement;$("#ab").innerHTML=addForm();bindAdd();const d=$("#addDrawer");d.inert=false;d.classList.add("on");$("#scrim").classList.add("on");d.setAttribute("aria-hidden","false");$("#f-last").focus()}
+function closeAdd(){const d=$("#addDrawer");if(!d.classList.contains("on"))return;d.classList.remove("on");$("#scrim").classList.remove("on");d.setAttribute("aria-hidden","true");d.inert=true;if(lastAdd&&lastAdd.isConnected)lastAdd.focus()}
+function bindAdd(){const form=$("#addForm");
+ const setE=(id,m)=>{const i=$("#"+id),e=$("#"+id+"-e");i.setAttribute("aria-invalid",m?"true":"false");e.textContent=m||"";e.classList.toggle("on",!!m);return !!m};
+ const showPw=s=>{const p=$("#f-pass"),e=$("#f-eye");p.type=s?"text":"password";e.innerHTML=ic(s?"eye-slash":"eye",20);e.setAttribute("aria-pressed",String(s));e.setAttribute("aria-label",s?"Скрыть пароль":"Показать пароль")};
+ form.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{if(i.getAttribute("aria-invalid")==="true")setE(i.id,"")}));
+ $("#f-eye").onclick=()=>showPw($("#f-pass").type==="password");
+ $("#f-gen").onclick=()=>{$("#f-pass").value=genPass();setE("f-pass","");showPw(true)};
+ form.onsubmit=e=>{e.preventDefault();
+  const v=id=>$("#"+id).value.trim(),nm=/^[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё\-' ]*$/,cap=s=>s?s[0].toUpperCase()+s.slice(1):s;let bad=null;
+  const chk=(id,m)=>{if(setE(id,m)&&!bad)bad=id};
+  chk("f-last",!v("f-last")?"Введите фамилию":!nm.test(v("f-last"))?"Только буквы":"");
+  chk("f-first",!v("f-first")?"Введите имя":!nm.test(v("f-first"))?"Только буквы":"");
+  chk("f-mid",v("f-mid")&&!nm.test(v("f-mid"))?"Только буквы":"");
+  const b=v("f-birth");let bm="";if(!b)bm="Укажите дату рождения";else{const age=(Date.now()-new Date(b))/31557600000;if(isNaN(age)||age<16||age>100)bm="Проверьте дату рождения"}chk("f-birth",bm);
+  const lg=v("f-login").toLowerCase();chk("f-login",!/^[a-z0-9._-]{3,32}$/.test(lg)?"3–32 символа: латиница, цифры, точка, дефис, подчёркивание":(lg==="admin"||P.some(p=>p.login&&p.login.toLowerCase()===lg))?"Такой логин уже занят":"");
+  const pw=$("#f-pass").value;chk("f-pass",pw.length<8?"Не короче 8 символов":"");
+  if(bad){$("#"+bad).focus();return}
+  const last=cap(v("f-last")),first=cap(v("f-first")),mid=cap(v("f-mid")),mk=()=>({state:"none",a:Array(NQ).fill(null),started:""});
+  const u={id:P.length,name:[last,first,mid].filter(Boolean).join(" "),first,mid,br:"Филиал не указан",login:lg,pw,birth:b,created:Date.now(),f:{"38":mk(),"178":mk()}};
+  P.push(u);saveU();HL=u.id;admTab("pp");
+  $("#ab").innerHTML=`<div class="okbox"><div class="okic">${ic("check-circle",32)}</div><div class="dh-name" style="font-size:20px">Участник добавлен</div><p class="muted" style="margin:6px 0 0">${esc(u.name)}</p><dl class="cred"><dt>Логин</dt><dd>${esc(u.login)}</dd><dt>Пароль</dt><dd>${esc(u.pw)}</dd></dl><p class="tiny">Передайте данные участнику. В демо пароль хранится в этом браузере; в рабочей версии — только в виде хэша, и повторно он не показывается.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="o-copy">Скопировать данные</button><button class="btn ghost" id="o-more">Добавить ещё</button></div></div>`;
+  $("#o-copy").onclick=()=>{const t=`${u.name}\nЛогин: ${u.login}\nПароль: ${u.pw}`,l=$("#o-copy");const ok=()=>l.textContent="Скопировано",no=()=>l.textContent="Не удалось скопировать";try{navigator.clipboard.writeText(t).then(ok,no)}catch(e){no()}};
+  $("#o-more").onclick=()=>{$("#ab").innerHTML=addForm();bindAdd();$("#f-last").focus()};
+  $("#o-copy").focus()}}
+$("#ax").onclick=closeAdd;
+$("#addDrawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...e.currentTarget.querySelectorAll("button:not([disabled]),input")];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
+
+/* drawer */
+let lastFocus=null;
+function openDrawer(p,f){f=f||(p.f["38"].state!=="none"?"38":"178");
+ const draw=()=>{const fs=p.f[f];$("#dh").innerHTML=`<div class="eyebrow tiny">${esc(p.br)}</div><div class="dh-name">${esc(p.name)}</div><div class="dh-meta"><div class="seg" id="dseg"><button data-f="38" aria-pressed="${f==="38"}">ФАП № 38</button><button data-f="178" aria-pressed="${f==="178"}">ФАП № 178</button></div><span class="st ${fs.state}">${ST[fs.state]}</span><span class="chip">Верно ${score(p,f)} из ${NQ}</span><span class="chip">${ic("timer",14)} ${fmtA(tsum(p,f))}</span></div>`;
+  $("#db").innerHTML=fs.state==="none"?`<p class="muted">Участник ещё не начинал этот тест.</p>`:`<div class="ans-list">${QS[f].map((q,k)=>{const x=fs.a[k];const m=!x?"e":x.v===q.c?"y":"n";return `<div class="ans-row"><div class="qn">${k+1}</div><div><div class="qq">${esc(q.q)}</div><div class="aa">${!x?"Нет ответа":`Ответ: <b>${L[x.v]}. ${esc(q.o[x.v])}</b>`}${x&&x.v!==q.c?` · верно: ${L[q.c]}. ${esc(q.o[q.c])}`:""}</div></div><div class="tm"><span class="mark ${m}" role="img" aria-label="${m==="y"?"Верно":m==="n"?"Неверно":"Нет ответа"}">${m==="y"?ic("check",24):m==="n"?ic("x",24):""}</span><div style="margin-top:4px">${x?x.t+" с":""}</div></div></div>`}).join("")}</div>`;
+  document.querySelectorAll("#dseg button").forEach(b=>b.onclick=()=>{f=b.dataset.f;draw()});};
+ draw();lastFocus=document.activeElement;const dr=$("#drawer");dr.inert=false;dr.classList.add("on");$("#scrim").classList.add("on");dr.setAttribute("aria-hidden","false");$("#dx").focus();}
+const closeD=()=>{const dr=$("#drawer");if(!dr.classList.contains("on"))return;dr.classList.remove("on");$("#scrim").classList.remove("on");dr.setAttribute("aria-hidden","true");dr.inert=true;if(lastFocus&&lastFocus.isConnected)lastFocus.focus()};
+$("#dx").onclick=closeD;$("#scrim").onclick=()=>{closeD();closeAdd()};
+$("#drawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...e.currentTarget.querySelectorAll("button:not([disabled])")];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeD();closeAdd()}});
+
+/* ═════ C ═════ */
+let cF="38",sel=null;
+function cRender(){const f=cF;document.querySelectorAll("#C-fap button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===f));
+ const started=P.filter(p=>p.f[f].state!=="none");
+ const pct=QS[f].map((q,k)=>{const a=started.map(p=>p.f[f].a[k]).filter(Boolean);return a.length?Math.round(a.filter(x=>x.v===q.c).length/a.length*100):null});
+ const done=P.filter(p=>p.f[f].state==="done");const avg=done.length?Math.round(done.reduce((s,p)=>s+score(p,f),0)/done.length/NQ*100):0;
+ const best=done.slice().sort((a,b)=>score(b,f)-score(a,f))[0];
+ $("#C-kpis").innerHTML=[["Завершили",done.length+"<small> / "+P.length+"</small>","users"],["Средний результат",avg+"<small>%</small>","chart-pie-slice"],["Лучший результат",best?score(best,f)+"<small>/"+NQ+" · "+short(best.name)+"</small>":"—","trophy"],["Среднее время на вопрос",(()=>{const a=started.flatMap(p=>p.f[f].a.filter(Boolean));return a.length?Math.round(a.reduce((s,x)=>s+x.t,0)/a.length):0})()+"<small> с</small>","clock-countdown"]].map(([l,v,ii])=>`<div class="card kpi"><div class="tiny"><span class="ki">${ic(ii,16)}</span>${l}</div><div class="v">${v}</div></div>`).join("");
+ const mx=$("#C-mx");mx.style.gridTemplateColumns=`190px repeat(${NQ},minmax(22px,1fr)) 44px`;
+ let h=`<div></div>${QS[f].map((_,k)=>`<div class="h">${k+1}</div>`).join("")}<div class="h">Итог</div>`;
+ started.forEach((p,r)=>{h+=`<div class="nm">${esc(short(p.name))} <small>${p.f[f].state==="live"?"· идёт":""}</small></div>`+QS[f].map((q,k)=>{const x=p.f[f].a[k];const m=!x?"e":x.v===q.c?"y":"n";const isSel=sel&&sel.p===p.id&&sel.k===k;return `<button class="cell ${m} ${isSel?"sel":""}" data-p="${p.id}" data-k="${k}" aria-label="${esc(short(p.name))}, вопрос ${k+1}: ${m==="y"?"верно":m==="n"?"неверно":"нет ответа"}">${m==="y"?ic("check",24,"ci"):m==="n"?ic("x",24,"ci"):""}</button>`}).join("")+`<div class="tot">${score(p,f)}</div>`});
+ h+=`<div class="nm tiny" style="color:var(--ink3)">% верных</div>`+pct.map(v=>`<div class="pct" style="${v!=null&&v<50?"color:var(--bad);font-weight:700":""}">${v==null?"—":v}</div>`).join("")+`<div></div>`;
+ mx.innerHTML=h;
+ mx.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{sel={p:+c.dataset.p,k:+c.dataset.k};cRender();const n=mx.querySelector(".cell.sel");if(n)n.focus({preventScroll:true})});
+ if(sel){const p=P[sel.p],q=QS[f][sel.k],x=p.f[f].a[sel.k];$("#C-detail").innerHTML=`<div class="tiny">${esc(p.name)} · вопрос ${sel.k+1}</div><div class="q">${esc(q.q)}</div>${q.o.map((o,j)=>`<div style="padding:6px 10px;border-radius:10px;margin-top:4px;${j===q.c?"background:#e3f0fa;color:var(--dk);font-weight:500":x&&x.v===j?"background:#fde8e9;color:var(--bad)":""}">${L[j]}. ${esc(o)}${j===q.c?" "+ic("check",16):""}${x&&x.v===j&&j!==q.c?" "+ic("x",16)+" ответ участника":""}</div>`).join("")}<div class="tiny" style="margin-top:8px">${x?"Время на ответ: "+x.t+" с":"Нет ответа"}</div><button class="btn ghost" style="margin-top:12px;height:38px;width:100%" id="C-open">Все ответы участника</button>`;$("#C-open").onclick=()=>openDrawer(p,f)}
+ else $("#C-detail").innerHTML='<span class="tiny">Выберите клетку в матрице</span>';
+ $("#C-hard").innerHTML=pct.map((v,k)=>({v,k})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v).slice(0,5).map(x=>`<div><b>№${x.k+1}</b><div class="pbar"><i style="width:${x.v}%;background:${x.v<50?"var(--rd)":"var(--bl)"}"></i></div><span class="tiny" style="text-align:right">${x.v}%</span></div>`).join("");
+ $("#C-branch").innerHTML=BR.map(b=>{const d=done.filter(p=>p.br===b);return{b,v:d.length?Math.round(d.reduce((s,p)=>s+score(p,f),0)/d.length/NQ*100):null}}).sort((a,b)=>(b.v??-1)-(a.v??-1)).map(x=>`<div><div class="l"><span>${esc(x.b)}</span><b style="color:var(--dk)">${x.v==null?"—":x.v+"%"}</b></div><div class="pbar"><i style="width:${x.v||0}%"></i></div></div>`).join("");
+uRender();
+}
+document.querySelectorAll("#C-fap button").forEach(b=>b.onclick=()=>{cF=b.dataset.f;sel=null;cRender()});
+cRender();
+
+/* навигация прототипа */
+const ls=document.getElementById("loginScreen");
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));ls.classList.toggle("off",id!=="login");if(id==="login"){ls.classList.remove("anim");void ls.offsetWidth;ls.classList.add("anim");document.getElementById("form").reset();document.querySelectorAll("#form .err").forEach(e=>e.classList.remove("on"));document.querySelectorAll("#form input").forEach(i=>i.setAttribute("aria-invalid","false"));document.getElementById("password").type="password";document.getElementById("eyeIco").icon=PI("eye");const tg=document.getElementById("toggle");tg.setAttribute("aria-pressed","false");tg.setAttribute("aria-label","Показать пароль")}if(id==="adm")cRender();if(id==="tst"){setUser();aChoose()}scrollTo(0,0)}
+document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.timer);closeD();closeAdd();show("login")});
+</script>
+<script>
+(function(){
+  document.getElementById('eyeIco').icon=PI('eye');
+  var form=document.getElementById('form'), login=document.getElementById('login'), pass=document.getElementById('password'),
+      toggle=document.getElementById('toggle'), alertBox=document.getElementById('alert'), btn=document.getElementById('submit');
+  function setErr(input,on){input.setAttribute('aria-invalid',on?'true':'false');document.getElementById(input.id+'-err').classList.toggle('on',on)}
+  [login,pass].forEach(function(i){i.addEventListener('input',function(){if(i.value.trim())setErr(i,false);alertBox.className='alert bad'})});
+  toggle.addEventListener('click',function(){var show=pass.type==='password';pass.type=show?'text':'password';eyeIco.morphTo(PI(show?'eye-slash':'eye'));toggle.setAttribute('aria-label',show?'Скрыть пароль':'Показать пароль');toggle.setAttribute('aria-pressed',String(show))});
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var l=!login.value.trim(), p=!pass.value;
+    setErr(login,l); setErr(pass,p);
+    if(l||p){(l?login:pass).focus();return}
+    btn.disabled=true; document.getElementById('submitTxt').textContent='Проверяем…';
+    // Прототип: логин admin — админ-панель, любой другой — тестирование
+    setTimeout(function(){ btn.disabled=false; document.getElementById('submitTxt').textContent='Войти'; var lg=login.value.trim().toLowerCase();
+      if(lg==='admin'){startSession(null);show('adm');return}
+      var u=findUser(lg);
+      if(u&&u.pw!==pass.value){alertBox.textContent='Неверный логин или пароль';alertBox.className='alert bad on';pass.focus();return}
+      startSession(u);show('tst'); },600);
+  });
+})();
+</script>
+</body></html>
