@@ -272,6 +272,36 @@
 @media (max-width:900px){.card,#tst .fap{border-radius:20px}}
 @media (max-width:1100px){#adm .twocol{grid-template-columns:1fr}}
 @media (max-width:800px){#C .wrapc{padding:16px}.kpis{grid-template-columns:1fr 1fr}}
+/* ───────── участники и форма добавления ───────── */
+.fi{width:100%;height:50px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fafbfd;border:1px solid var(--line2);border-radius:var(--r);outline:none;transition:border-color .15s}
+.fi:hover{border-color:#6f7686}
+.fi:focus{border-color:var(--bl);background:#fff;box-shadow:0 0 0 4px rgba(0,117,191,.18)}
+.fi[aria-invalid="true"]{border-color:var(--rd)}
+.fi.sm{height:40px;width:280px;max-width:100%;font-size:14px}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-weight:500;font-size:14px;margin-bottom:6px}
+.fld .optn{font-weight:400;color:var(--ink2);font-size:13px;margin-left:6px}
+.ferr{display:none;margin-top:6px;font-size:13px;font-weight:500;color:var(--bad)}
+.ferr.on{display:block}
+.inp{position:relative}
+.eye{position:absolute;right:6px;top:6px;width:42px;height:38px;border:0;border-radius:var(--r);background:none;color:#6f7686;display:grid;place-items:center}
+.eye:hover{color:var(--bl);background:#eef4fb}
+.okic{width:56px;height:56px;border-radius:18px;margin-bottom:14px;background:#eaf4fb;color:var(--bl);display:grid;place-items:center}
+.cred{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:16px 0;padding:14px 16px;background:var(--bg);border-radius:var(--r)}
+.cred dt{color:var(--ink2);font-size:13px}
+.cred dd{margin:0;font-weight:700;color:var(--dk);word-break:break-all}
+#adm .people{margin-top:16px;padding:20px}
+#adm .people .phead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+#adm .people h2{margin:0;font-size:16px;color:var(--dk);flex:1}
+#adm .people h2 .cnt{color:var(--ink2);font-weight:500;font-size:14px;margin-left:2px}
+#adm .urow,#adm .uhead{display:grid;grid-template-columns:minmax(200px,1.6fr) 110px minmax(150px,1fr) minmax(150px,1fr) 92px;gap:12px;align-items:center}
+#adm .uhead{padding:0 14px 8px;font-size:12px;color:var(--ink2)}
+#adm .urow{padding:12px 14px;border-radius:var(--r);background:var(--bg)}
+#adm .ulist{display:grid;gap:8px;max-height:560px;overflow:auto}
+#adm .uc{display:flex;flex-direction:column;gap:4px;align-items:flex-start;font-size:13.5px}
+#adm .uc b{color:var(--dk);font-size:14px}
+#adm .uc .ul{display:none;font-size:12px;color:var(--ink2)}
+@media (max-width:900px){#adm .uhead{display:none}#adm .urow{grid-template-columns:1fr 1fr}#adm .urow .nm2{grid-column:1/-1}#adm .uc .ul{display:block}.fi.sm{width:100%}}
 .ph{flex:none;display:inline-block;vertical-align:-0.15em}
 morph-icon{display:inline-flex}
 </style>
@@ -279,6 +309,7 @@ morph-icon{display:inline-flex}
 <script>
 /* Phosphor Icons (fill), MIT — https://phosphoricons.com */
 const PH={"eye": "<path d=\"M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z\"/>", "eye-slash": "<path d=\"M96.68,57.87a4,4,0,0,1,2.08-6.6A130.13,130.13,0,0,1,128,48c34.88,0,66.57,13.26,91.66,38.35,18.83,18.83,27.3,37.62,27.65,38.41a8,8,0,0,1,0,6.5c-.35.79-8.82,19.57-27.65,38.4q-4.28,4.26-8.79,8.07a4,4,0,0,1-5.55-.36ZM213.92,210.62a8,8,0,1,1-11.84,10.76L180,197.13A127.21,127.21,0,0,1,128,208c-34.88,0-66.57-13.26-91.66-38.34C17.51,150.83,9,132.05,8.69,131.26a8,8,0,0,1,0-6.5C9,124,17.51,105.18,36.34,86.35a135,135,0,0,1,25-19.78L42.08,45.38A8,8,0,1,1,53.92,34.62Zm-65.49-48.25-52.69-58a40,40,0,0,0,52.69,58Z\"/>", "user": "<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>", "lock-key": "<path d=\"M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80Zm-72,78.63V184a8,8,0,0,1-16,0V158.63a24,24,0,1,1,16,0ZM160,80H96V56a32,32,0,0,1,64,0Z\"/>", "question": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,168a12,12,0,1,1,12-12A12,12,0,0,1,128,192Zm8-48.72V144a8,8,0,0,1-16,0v-8a8,8,0,0,1,8-8c13.23,0,24-9,24-20s-10.77-20-24-20-24,9-24,20v4a8,8,0,0,1-16,0v-4c0-19.85,17.94-36,40-36s40,16.15,40,36C168,125.38,154.24,139.93,136,143.28Z\"/>", "sign-out": "<path d=\"M120,216a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V40a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H56V208h56A8,8,0,0,1,120,216Zm109.66-93.66-40-40A8,8,0,0,0,176,88v32H112a8,8,0,0,0,0,16h64v32a8,8,0,0,0,13.66,5.66l40-40A8,8,0,0,0,229.66,122.34Z\"/>", "arrow-left": "<path d=\"M224,128a8,8,0,0,1-8,8H120v64a8,8,0,0,1-13.66,5.66l-72-72a8,8,0,0,1,0-11.32l72-72A8,8,0,0,1,120,56v64h96A8,8,0,0,1,224,128Z\"/>", "arrow-right": "<path d=\"M221.66,133.66l-72,72A8,8,0,0,1,136,200V136H40a8,8,0,0,1,0-16h96V56a8,8,0,0,1,13.66-5.66l72,72A8,8,0,0,1,221.66,133.66Z\"/>", "timer": "<path d=\"M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm45.66,61.66-40,40a8,8,0,0,1-11.32-11.32l40-40a8,8,0,0,1,11.32,11.32ZM96,16a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,16Z\"/>", "list-numbers": "<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM56.84,75.58a8,8,0,0,1,3.58-10.74l16-8A8,8,0,0,1,88,64v48a8,8,0,0,1-16,0V76.94l-4.42,2.22A8,8,0,0,1,56.84,75.58ZM92,180a8,8,0,0,1,0,16H68a8,8,0,0,1-6.4-12.8l21.67-28.89A3.92,3.92,0,0,0,84,152a4,4,0,0,0-7.77-1.33,8,8,0,0,1-15.09-5.34,20,20,0,1,1,35,18.53L84,180Zm100,4H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Zm0-48H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Zm0-48H120a8,8,0,0,1,0-16h72a8,8,0,0,1,0,16Z\"/>", "repeat-once": "<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Zm-88,40a8,8,0,0,0,8-8V104a8,8,0,0,0-11.58-7.16l-16,8a8,8,0,1,0,7.16,14.31l4.42-2.21V152A8,8,0,0,0,136,160Z\"/>", "compass": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>", "chart-bar": "<path d=\"M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1,0-16h8V136a8,8,0,0,1,8-8H72a8,8,0,0,1,8,8v64H96V88a8,8,0,0,1,8-8h32a8,8,0,0,1,8,8V200h16V40a8,8,0,0,1,8-8h40a8,8,0,0,1,8,8V200h8A8,8,0,0,1,232,208Z\"/>", "flag-checkered": "<path d=\"M227.32,48.75A8,8,0,0,0,218.76,50c-28,24.22-51.72,12.48-79.21-1.13C111.07,34.76,78.78,18.79,42.76,50h0A8,8,0,0,0,40,56V224a8,8,0,0,0,16,0V179.77c26.79-21.16,49.87-9.75,76.45,3.41,16.4,8.11,34.06,16.85,53,16.85,13.93,0,28.54-4.75,43.82-18a8,8,0,0,0,2.76-6V56A8,8,0,0,0,227.32,48.75ZM56,160.44V109.88c16.85-11.28,32.64-11.59,48-7.34v51.74C88.87,150.47,72.87,150.71,56,160.44ZM104,50.87c9.25,2.83,18.61,7.45,28.45,12.32,11.26,5.57,23.11,11.43,35.55,14.56v51.74c15.35,4.25,31.14,3.94,48-7.35v50.11c-16.87,13.32-32.27,13.72-48,8.91V129.49c-21.62-6-42.38-21-64-26.95Z\"/>", "check-circle": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm45.66,85.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z\"/>", "circle": "<path d=\"M232,128A104,104,0,1,1,128,24,104.13,104.13,0,0,1,232,128Z\"/>", "x": "<path d=\"M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM181.66,170.34a8,8,0,0,1-11.32,11.32L128,139.31,85.66,181.66a8,8,0,0,1-11.32-11.32L116.69,128,74.34,85.66A8,8,0,0,1,85.66,74.34L128,116.69l42.34-42.35a8,8,0,0,1,11.32,11.32L139.31,128Z\"/>", "check": "<path d=\"M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40ZM205.66,85.66l-96,96a8,8,0,0,1-11.32,0l-40-40a8,8,0,0,1,11.32-11.32L104,164.69l90.34-90.35a8,8,0,0,1,11.32,11.32Z\"/>", "file-pdf": "<path d=\"M44,120H212a4,4,0,0,0,4-4V88a8,8,0,0,0-2.34-5.66l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40v76A4,4,0,0,0,44,120ZM152,44l44,44H152Zm72,108.53a8.18,8.18,0,0,1-8.25,7.47H192v16h15.73a8.17,8.17,0,0,1,8.25,7.47,8,8,0,0,1-8,8.53H192v15.73a8.17,8.17,0,0,1-7.47,8.25,8,8,0,0,1-8.53-8V152a8,8,0,0,1,8-8h32A8,8,0,0,1,224,152.53ZM64,144H48a8,8,0,0,0-8,8v55.73A8.17,8.17,0,0,0,47.47,216,8,8,0,0,0,56,208v-8h7.4c15.24,0,28.14-11.92,28.59-27.15A28,28,0,0,0,64,144Zm-.35,40H56V160h8a12,12,0,0,1,12,13.16A12.25,12.25,0,0,1,63.65,184ZM128,144H112a8,8,0,0,0-8,8v56a8,8,0,0,0,8,8h15.32c19.66,0,36.21-15.48,36.67-35.13A36,36,0,0,0,128,144Zm-.49,56H120V160h8a20,20,0,0,1,20,20.77C147.58,191.59,138.34,200,127.51,200Z\"/>", "users": "<path d=\"M164.47,195.63a8,8,0,0,1-6.7,12.37H10.23a8,8,0,0,1-6.7-12.37,95.83,95.83,0,0,1,47.22-37.71,60,60,0,1,1,66.5,0A95.83,95.83,0,0,1,164.47,195.63Zm87.91-.15a95.87,95.87,0,0,0-47.13-37.56A60,60,0,0,0,144.7,54.59a4,4,0,0,0-1.33,6A75.83,75.83,0,0,1,147,150.53a4,4,0,0,0,1.07,5.53,112.32,112.32,0,0,1,29.85,30.83,23.92,23.92,0,0,1,3.65,16.47,4,4,0,0,0,3.95,4.64h60.3a8,8,0,0,0,7.73-5.93A8.22,8.22,0,0,0,252.38,195.48Z\"/>", "chart-pie-slice": "<path d=\"M100,116.43a8,8,0,0,0,4-6.93v-72A8,8,0,0,0,93.34,30,104.06,104.06,0,0,0,25.73,147a8,8,0,0,0,4.52,5.81,7.86,7.86,0,0,0,3.35.74,8,8,0,0,0,4-1.07ZM88,49.62v55.26L40.12,132.51C40,131,40,129.48,40,128A88.12,88.12,0,0,1,88,49.62ZM232,128A104,104,0,0,1,38.32,180.7a8,8,0,0,1,2.87-11L120,123.83V32a8,8,0,0,1,8-8,104.05,104.05,0,0,1,89.74,51.48c.11.16.21.32.31.49s.2.37.29.55A103.34,103.34,0,0,1,232,128Z\"/>", "trophy": "<path d=\"M232,64H208V48a8,8,0,0,0-8-8H56a8,8,0,0,0-8,8V64H24A16,16,0,0,0,8,80V96a40,40,0,0,0,40,40h3.65A80.13,80.13,0,0,0,120,191.61V216H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16H136V191.58c31.94-3.23,58.44-25.64,68.08-55.58H208a40,40,0,0,0,40-40V80A16,16,0,0,0,232,64ZM48,120A24,24,0,0,1,24,96V80H48v32q0,4,.39,8ZM232,96a24,24,0,0,1-24,24h-.5a81.81,81.81,0,0,0,.5-8.9V80h24Z\"/>", "warning-circle": "<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,104a12,12,0,1,1,12-12A12,12,0,0,1,128,184Z\"/>", "buildings": "<path d=\"M239.73,208H224V96a16,16,0,0,0-16-16H164a4,4,0,0,0-4,4V208H144V32.41a16.43,16.43,0,0,0-6.16-13,16,16,0,0,0-18.72-.69L39.12,72A16,16,0,0,0,32,85.34V208H16.27A8.18,8.18,0,0,0,8,215.47,8,8,0,0,0,16,224H240a8,8,0,0,0,8-8.53A8.18,8.18,0,0,0,239.73,208ZM76,184a8,8,0,0,1-8.53,8A8.18,8.18,0,0,1,60,183.72V168.27A8.19,8.19,0,0,1,67.47,160,8,8,0,0,1,76,168Zm0-56a8,8,0,0,1-8.53,8A8.19,8.19,0,0,1,60,127.72V112.27A8.19,8.19,0,0,1,67.47,104,8,8,0,0,1,76,112Zm40,56a8,8,0,0,1-8.53,8,8.18,8.18,0,0,1-7.47-8.26V168.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Zm0-56a8,8,0,0,1-8.53,8,8.19,8.19,0,0,1-7.47-8.26V112.27a8.19,8.19,0,0,1,7.47-8.26,8,8,0,0,1,8.53,8Z\"/>", "user-circle": "<path d=\"M172,120a44,44,0,1,1-44-44A44.05,44.05,0,0,1,172,120Zm60,8A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88.09,88.09,0,0,0-91.47-87.93C77.43,41.89,39.87,81.12,40,128.25a87.65,87.65,0,0,0,22.24,58.16A79.71,79.71,0,0,1,84,165.1a4,4,0,0,1,4.83.32,59.83,59.83,0,0,0,78.28,0,4,4,0,0,1,4.83-.32,79.71,79.71,0,0,1,21.79,21.31A87.62,87.62,0,0,0,216,128Z\"/>", "clock-countdown": "<path d=\"M208,96a12,12,0,1,1,12,12A12,12,0,0,1,208,96ZM196,72a12,12,0,1,0-12-12A12,12,0,0,0,196,72Zm28.66,56a8,8,0,0,0-8.63,7.31A88.12,88.12,0,1,1,120.66,40,8,8,0,0,0,119.34,24,104.12,104.12,0,1,0,232,136.66,8,8,0,0,0,224.66,128ZM128,56a72,72,0,1,1-72,72A72.08,72.08,0,0,1,128,56Zm-8,72a8,8,0,0,0,8,8h48a8,8,0,0,0,0-16H136V80a8,8,0,0,0-16,0Zm40-80a12,12,0,1,0-12-12A12,12,0,0,0,160,48Z\"/>", "seal-check": "<path d=\"M225.86,102.82c-3.77-3.94-7.67-8-9.14-11.57-1.36-3.27-1.44-8.69-1.52-13.94-.15-9.76-.31-20.82-8-28.51s-18.75-7.85-28.51-8c-5.25-.08-10.67-.16-13.94-1.52-3.56-1.47-7.63-5.37-11.57-9.14C146.28,23.51,138.44,16,128,16s-18.27,7.51-25.18,14.14c-3.94,3.77-8,7.67-11.57,9.14C88,40.64,82.56,40.72,77.31,40.8c-9.76.15-20.82.31-28.51,8S41,67.55,40.8,77.31c-.08,5.25-.16,10.67-1.52,13.94-1.47,3.56-5.37,7.63-9.14,11.57C23.51,109.72,16,117.56,16,128s7.51,18.27,14.14,25.18c3.77,3.94,7.67,8,9.14,11.57,1.36,3.27,1.44,8.69,1.52,13.94.15,9.76.31,20.82,8,28.51s18.75,7.85,28.51,8c5.25.08,10.67.16,13.94,1.52,3.56,1.47,7.63,5.37,11.57,9.14C109.72,232.49,117.56,240,128,240s18.27-7.51,25.18-14.14c3.94-3.77,8-7.67,11.57-9.14,3.27-1.36,8.69-1.44,13.94-1.52,9.76-.15,20.82-.31,28.51-8s7.85-18.75,8-28.51c.08-5.25.16-10.67,1.52-13.94,1.47-3.56,5.37-7.63,9.14-11.57C232.49,146.28,240,138.44,240,128S232.49,109.73,225.86,102.82Zm-52.2,6.84-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z\"/>"};
+PH.plus='<path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm-24,104H136v48a8,8,0,0,1-16,0V136H72a8,8,0,0,1,0-16h48V72a8,8,0,0,1,16,0v48h48a8,8,0,0,1,0,16Z"/>';
 const ic=(n,s=18,cls="")=>(s=Math.round(s*.82),`<svg class="ph ${cls}" width="${s}" height="${s}" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true">${PH[n]}</svg>`);
 const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor">${PH[n]}</svg>`);
 </script>
@@ -398,7 +429,7 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
 
         <button class="btn" type="submit" id="submit"><span id="submitTxt">Войти</span><script>document.write(ic("arrow-right",18))</script></button>
 
-        <p class="help"><span class="hi"><script>document.write(ic("question",20))</script></span><span><b>Прототип:</b> любой логин и пароль — тестирование, логин <b>admin</b> — админ-панель.<br><br><b>Нет логина или не получается войти?</b><br>Обратитесь к организатору конкурса в вашем филиале.</span></p>
+        <p class="help"><span class="hi"><script>document.write(ic("question",20))</script></span><span><b>Прототип:</b> любой логин и пароль — тестирование, логин <b>admin</b> — админ-панель. Участник, добавленный в админке, входит со своими логином и паролем.<br><br><b>Нет логина или не получается войти?</b><br>Обратитесь к организатору конкурса в вашем филиале.</span></p>
       </form>
     </main>
     <footer>
@@ -415,13 +446,13 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
     <img src="../../design/logos/emblem-ru.svg" alt="Госкорпорация по ОрВД">
     <div class="ttl">Конкурс профессионального мастерства<small>служба ЭРТОС · тестирование</small></div>
     <div class="sp"></div>
-    <div class="user"><span class="muted">Иванов И. И.</span><div class="ava">ИИ</div><button class="btn ghost logout" style="height:36px;padding:0 14px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+    <div class="user"><span class="muted" id="uName">Иванов И. И.</span><div class="ava" id="uAva">ИИ</div><button class="btn ghost logout" style="height:36px;padding:0 14px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
   </header>
   <div class="wrap" id="A-root"></div>
 </section>
 
 <section class="screen" id="adm">
-  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
   <div class="wrapc">
     <div class="kpis" id="C-kpis"></div>
     <div class="twocol">
@@ -434,11 +465,17 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
         <div class="card"><h2><script>document.write(ic("buildings",18))</script>Средний балл по филиалам</h2><div class="branch" id="C-branch"></div></div>
       </div>
     </div>
+    <section class="card people" aria-labelledby="u-h">
+      <div class="phead"><h2 id="u-h"><script>document.write(ic("users",18))</script>Участники<span class="cnt" id="u-count"></span></h2><input class="fi sm" id="u-q" type="search" placeholder="Поиск по ФИО или логину" aria-label="Поиск участника" autocomplete="off"><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button></div>
+      <div class="uhead" aria-hidden="true"><span>Участник</span><span>Дата рождения</span><span>ФАП № 38</span><span>ФАП № 178</span><span></span></div>
+      <div class="ulist" id="u-list" role="list"></div>
+    </section>
     <p class="demo" style="margin-top:12px">Демо-данные макета.</p>
   </div>
 </section>
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Ответы участника"><button class="x" id="dx" aria-label="Закрыть"><script>document.write(ic("x",16))</script></button><header id="dh"></header><div class="body" id="db"></div></aside>
+<aside class="drawer" id="addDrawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Новый участник"><button class="x" id="ax" aria-label="Закрыть"><script>document.write(ic("x",16))</script></button><header><div class="eyebrow tiny">Участники</div><div class="dh-name">Новый участник</div></header><div class="body" id="ab"></div></aside>
 <script>
 /* ── банк вопросов: ПРИМЕРЫ для макета; замените на утверждённый банк ── */
 const BANK={
@@ -463,17 +500,19 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const radar=(cls)=>`<svg viewBox="0 0 200 200" class="${cls||""}" aria-hidden="true"><g fill="none" stroke="#fff" stroke-opacity=".7"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="90"/><path d="M100 0V200M0 100H200"/></g></svg>`;
 
 /* ═════ A ═════ */
-const A={fap:null,i:0,ans:{},end:0,S:{},timer:null,root:$("#A-root")};
+const A={fap:null,i:0,ans:{},end:0,qs:0,S:{},timer:null,root:$("#A-root")};
+let CUR=null,lastAdd=null;
+const greet=()=>CUR?esc([CUR.first,CUR.mid].filter(Boolean).join(" ")):"Иван Иванович";
 const left=()=>Math.max(0,Math.round((A.end-Date.now())/1000));
 function aChoose(){
- A.root.innerHTML=`<div class="hello rise"><div class="eyebrow tiny">Шаг 1 из 2 · выбор теста</div><h1>Добрый день, Иван Иванович</h1><p class="muted">Выберите федеральные авиационные правила, по которым будете проходить тестирование.</p></div>
+ A.root.innerHTML=`<div class="hello rise"><div class="eyebrow tiny">Шаг 1 из 2 · выбор теста</div><h1>Добрый день, ${greet()}</h1><p class="muted">Выберите федеральные авиационные правила, по которым будете проходить тестирование.</p></div>
  <div class="faps">${["38","178"].map((k,n)=>{const b=BANK[k];return `<button class="fap f${k} rise" style="animation-delay:${.08+n*.08}s" data-fap="${k}" ${A.S[k]&&A.S[k].done?"disabled":""}>${radar()}<span class="go">${ic("arrow-right",22)}</span><div><div class="eyebrow" style="opacity:.8">Федеральные авиационные правила</div><div class="no">№ ${b.no}</div><div class="nm">${b.name}</div></div><div class="meta"><span>${ic("list-numbers",14)} ${b.qs.length} вопросов</span><span>${ic("timer",14)} 40 минут</span>${A.S[k]&&A.S[k].done?`<span>${ic("check-circle",14)} Пройден</span>`:`<span>${ic("repeat-once",14)} 1 попытка</span>`}</div></button>`}).join("")}</div>
  <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>40 минут на один тест</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
- A.root.querySelectorAll(".fap").forEach(b=>b.onclick=()=>{const k=b.dataset.fap;const s=A.S[k]||(A.S[k]={ans:{},end:Date.now()+DURATION*1000,done:false});A.fap=k;A.i=0;A.ans=s.ans;A.end=s.end;aStart()});
+ A.root.querySelectorAll(".fap").forEach(b=>b.onclick=()=>{const k=b.dataset.fap;const isNew=!A.S[k];const s=A.S[k]||(A.S[k]={ans:{},end:Date.now()+DURATION*1000,done:false});if(isNew)trackStart(k);A.fap=k;A.i=0;A.ans=s.ans;A.end=s.end;aStart()});
 }
 function aStart(){clearInterval(A.timer);if(left()===0){aRes();return}A.timer=setInterval(()=>{const t=$("#A-time");if(t)t.textContent=fmt(left());if(left()===0)aRes()},1000);aQ()}
 function aQ(){
- const b=BANK[A.fap],q=b.qs[A.i],n=b.qs.length,done=Object.keys(A.ans).length;
+ A.qs=Date.now();const b=BANK[A.fap],q=b.qs[A.i],n=b.qs.length,done=Object.keys(A.ans).length;
  A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",15)} <span id="A-time">${fmt(left())}</span></span></div>
  <div class="bar"><i style="width:${done/n*100}%"></i></div><p class="tiny" style="margin:8px 0 18px">Отвечено ${done} из ${n}</p>
  <div class="card qcard rise"><div class="qnum">ВОПРОС ${A.i+1} ИЗ ${n}</div><div class="qtext">${esc(q.q)}</div>
@@ -484,7 +523,7 @@ function aQ(){
  const opts=[...A.root.querySelectorAll(".opt")];
  opts.forEach(o=>{o.querySelector(".chk").icon=PI(A.ans[A.i]===+o.dataset.j?"check-circle":"circle")});
  opts.forEach((o,j)=>{o.tabIndex=(A.ans[A.i]===j||(A.ans[A.i]==null&&j===0))?0:-1;o.onkeydown=e=>{const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();const t=opts[(j+d+opts.length)%opts.length];t.focus();t.click()}});
- opts.forEach(o=>o.onclick=()=>{const j=+o.dataset.j;if(A.ans[A.i]===j)return;const prev=A.ans[A.i];A.ans[A.i]=j;opts.forEach(x=>x.tabIndex=+x.dataset.j===j?0:-1);
+ opts.forEach(o=>o.onclick=()=>{const j=+o.dataset.j;if(A.ans[A.i]===j)return;const prev=A.ans[A.i];A.ans[A.i]=j;opts.forEach(x=>x.tabIndex=+x.dataset.j===j?0:-1);trackAns(j);
   opts.forEach(x=>{const on=+x.dataset.j===j;x.setAttribute("aria-checked",on);if(on)x.querySelector(".chk").morphTo(PI("check-circle"));else if(+x.dataset.j===prev)x.querySelector(".chk").morphTo(PI("circle"))});
   const d=Object.keys(A.ans).length;A.root.querySelector(".bar i").style.width=d/n*100+"%";A.root.querySelector(".bar + .tiny").textContent=`Отвечено ${d} из ${n}`;A.root.querySelector(`.dots [data-k="${A.i}"]`).className="cur"});
  A.root.querySelectorAll(".dots button").forEach(d=>d.onclick=()=>{A.i=+d.dataset.k;aQ()});
@@ -492,7 +531,7 @@ function aQ(){
  $("#A-prev").onclick=()=>{A.i--;aQ()};
  $("#A-next").onclick=()=>{if(A.i<n-1){A.i++;aQ()}else aRes()};
 }
-function aRes(){clearInterval(A.timer);A.S[A.fap].done=true;const rest=["38","178"].filter(k=>!A.S[k]||!A.S[k].done);const b=BANK[A.fap],n=b.qs.length,done=Object.keys(A.ans).length;
+function aRes(){clearInterval(A.timer);A.S[A.fap].done=true;trackDone();const rest=["38","178"].filter(k=>!A.S[k]||!A.S[k].done);const b=BANK[A.fap],n=b.qs.length,done=Object.keys(A.ans).length;
  A.root.innerHTML=`<div class="card res rise"><div class="resic">${ic("seal-check",44)}</div><div class="eyebrow tiny">${b.short} · тест завершён</div><div class="big" style="margin:18px 0 8px">${done}/${n}</div><p class="muted">ответов отправлено. Результат проверит и опубликует организатор конкурса.</p><p class="tiny">Затрачено времени: ${fmt(DURATION-left())}</p><div style="display:flex;gap:12px;justify-content:center;margin-top:24px">${rest.length?`<button class="btn" id="A-again">Пройти второй тест</button>`:`<p class="tiny">Все тесты пройдены</p>`}</div></div>`;
  const ag=$("#A-again");if(ag)ag.onclick=aChoose;}
 aChoose();
@@ -515,7 +554,7 @@ const QS={"38":Q("38"),"178":Q("178")};
 const BR=["Аэронавигация Центральной Сибири","Аэронавигация Урала","Аэронавигация Северо-Запада","Аэронавигация Дальнего Востока","Аэронавигация Юга"];
 const NAMES=["Иванов Иван Иванович","Петров Алексей Сергеевич","Смирнова Елена Викторовна","Кузнецов Дмитрий Андреевич","Соколов Максим Николаевич","Попова Ольга Геннадьевна","Лебедев Кирилл Павлович","Новиков Сергей Владимирович","Морозов Артём Александрович","Волкова Татьяна Игоревна","Фёдоров Роман Евгеньевич","Егоров Владимир Леонидович"];
 let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
-const short=n=>{const p=n.split(" ");return p[0]+" "+p[1][0]+". "+p[2][0]+"."};
+const short=n=>{const p=n.split(" ").filter(Boolean);return p[0]+" "+p[1][0]+"."+(p[2]?" "+p[2][0]+".":"")};
 const ini=n=>{const p=n.split(" ");return p[0][0]+p[1][0]};
 const P=NAMES.map((n,i)=>{const mk=(f,state,cnt)=>{const skill=.55+rnd()*.4;const a=[];for(let k=0;k<NQ;k++){if(k>=cnt){a.push(null);continue}const right=rnd()<skill;const c=QS[f][k].c;a.push({v:right?c:(c+1+Math.floor(rnd()*3))%4,t:20+Math.floor(rnd()*90)})}return{state,a,started:"10:"+String(2+i).padStart(2,"0")}};
  const s38=i<6?"done":i<9?"live":"none", s178=i<3?"done":i<6?"live":"none";
@@ -528,6 +567,69 @@ const overall=p=>{const s=[p.f["38"].state,p.f["178"].state];return s.includes("
 const ST={live:"Проходит",done:"Завершил",none:"Не начал"};
 const L="АБВГ";
 
+/* ═════ участники: добавление и отслеживание ═════ */
+const TR={а:"a",б:"b",в:"v",г:"g",д:"d",е:"e",ё:"e",ж:"zh",з:"z",и:"i",й:"i",к:"k",л:"l",м:"m",н:"n",о:"o",п:"p",р:"r",с:"s",т:"t",у:"u",ф:"f",х:"h",ц:"c",ч:"ch",ш:"sh",щ:"sch",ъ:"",ы:"y",ь:"",э:"e",ю:"yu",я:"ya"};
+const tr=s=>[...s.toLowerCase()].map(c=>TR[c]??c).join("");
+const LS="ertos_participants_v1";
+/* демо-участникам дописываем логин и дату рождения */
+P.forEach(p=>{const n=p.name.split(" ");p.login=tr(n[0])+"."+tr(n[1][0])+tr(n[2][0]);p.birth=(1972+Math.floor(rnd()*26))+"-"+String(1+Math.floor(rnd()*12)).padStart(2,"0")+"-"+String(1+Math.floor(rnd()*28)).padStart(2,"0")});
+/* добавленные вручную участники хранятся в браузере (демо). В рабочей версии — БД, пароль только в виде хэша */
+const saveU=()=>{try{localStorage.setItem(LS,JSON.stringify(P.filter(p=>p.pw!==undefined)))}catch(e){}};
+try{JSON.parse(localStorage.getItem(LS)||"[]").filter(u=>u&&u.name&&u.login&&u.f&&u.f["38"]&&u.f["178"]).forEach(u=>{u.id=P.length;P.push(u)})}catch(e){}
+const findUser=l=>P.find(p=>p.pw!==undefined&&p.login.toLowerCase()===l)||null;
+const dmy=s=>s?s.split("-").reverse().join("."):"—";
+function startSession(u){CUR=u;clearInterval(A.timer);A.S={};if(u)["38","178"].forEach(k=>{if(u.f[k].state==="done")A.S[k]={ans:{},end:0,done:true}})}
+function setUser(){$("#uName").textContent=CUR?short(CUR.name):"Иванов И. И.";$("#uAva").textContent=CUR?ini(CUR.name):"ИИ"}
+function trackStart(k){if(!CUR)return;CUR.f[k]={state:"live",a:Array(NQ).fill(null),started:new Date().toTimeString().slice(0,5)};saveU()}
+function trackAns(j){if(!CUR)return;const f=CUR.f[A.fap];f.state="live";f.a[A.i]={v:j,t:Math.max(1,Math.round((Date.now()-A.qs)/1000))};saveU()}
+function trackDone(){if(!CUR)return;CUR.f[A.fap].state="done";saveU()}
+
+function uRender(){const q=($("#u-q").value||"").trim().toLowerCase();
+ const rows=P.filter(p=>!q||(p.name+" "+p.login).toLowerCase().includes(q));
+ const cell=(p,f)=>{const x=p.f[f];return `<div class="uc"><span class="ul">ФАП № ${f}</span>${x.state==="none"?`<span class="st none">${ST.none}</span>`:`<span class="st ${x.state}">${ST[x.state]}</span><span class="tiny">${score(p,f)} верно · ${answered(p,f)} отв.</span>`}</div>`};
+ $("#u-count").textContent=P.length;
+ $("#u-list").innerHTML=rows.length?rows.map(p=>{const any=p.f["38"].state!=="none"||p.f["178"].state!=="none";return `<div class="urow" role="listitem"><div class="uc nm2"><b>${esc(p.name)}</b><span class="tiny">${esc(p.login)}</span></div><div class="uc"><span class="ul">Дата рождения</span>${dmy(p.birth)}</div>${cell(p,"38")}${cell(p,"178")}<div class="uc"><button class="btn ghost" data-id="${p.id}" style="height:36px;padding:0 14px" ${any?"":"disabled"}>Ответы</button></div></div>`}).join(""):`<p class="tiny">Никого не найдено</p>`;
+ $("#u-list").querySelectorAll("button[data-id]").forEach(b=>b.onclick=()=>openDrawer(P[+b.dataset.id]))}
+$("#u-q").oninput=uRender;
+document.querySelectorAll(".js-add").forEach(b=>b.onclick=openAdd);
+
+const genPass=()=>{const c="abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789",a=new Uint32Array(10);crypto.getRandomValues(a);return [...a].map(x=>c[x%c.length]).join("")};
+const FLD=(id,lab,inner)=>`<div class="fld"><label for="${id}">${lab}</label>${inner||`<input class="fi" id="${id}" autocomplete="off" aria-describedby="${id}-e">`}<div class="ferr" id="${id}-e" role="alert"></div></div>`;
+function addForm(){const today=new Date().toISOString().slice(0,10);
+ return `<form id="addForm" novalidate autocomplete="off"><p class="muted" style="margin:0 0 18px;font-size:14px">После сохранения вы увидите логин и пароль, чтобы передать их участнику. Статус прохождения тестов появится в списке участников.</p>
+ ${FLD("f-last","Фамилия")}${FLD("f-first","Имя")}${FLD("f-mid","Отчество <span class=\"optn\">необязательно</span>")}
+ ${FLD("f-birth","Дата рождения",`<input class="fi" id="f-birth" type="date" min="1920-01-01" max="${today}" aria-describedby="f-birth-e">`)}
+ ${FLD("f-login","Логин",`<input class="fi" id="f-login" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="f-login-e">`)}
+ ${FLD("f-pass","Пароль",`<div class="inp"><input class="fi" id="f-pass" type="password" autocomplete="new-password" style="padding-right:56px" aria-describedby="f-pass-e"><button type="button" class="eye" id="f-eye" aria-label="Показать пароль" aria-pressed="false">${ic("eye",20)}</button></div><button type="button" class="btn ghost" id="f-gen" style="height:38px;margin-top:8px">Сгенерировать пароль</button>`)}
+ <button class="btn" type="submit" style="width:100%;height:52px;margin-top:6px">Добавить участника</button></form>`}
+function openAdd(){closeD();lastAdd=document.activeElement;$("#ab").innerHTML=addForm();bindAdd();const d=$("#addDrawer");d.inert=false;d.classList.add("on");$("#scrim").classList.add("on");d.setAttribute("aria-hidden","false");$("#f-last").focus()}
+function closeAdd(){const d=$("#addDrawer");if(!d.classList.contains("on"))return;d.classList.remove("on");$("#scrim").classList.remove("on");d.setAttribute("aria-hidden","true");d.inert=true;if(lastAdd&&lastAdd.isConnected)lastAdd.focus()}
+function bindAdd(){const form=$("#addForm");
+ const setE=(id,m)=>{const i=$("#"+id),e=$("#"+id+"-e");i.setAttribute("aria-invalid",m?"true":"false");e.textContent=m||"";e.classList.toggle("on",!!m);return !!m};
+ const showPw=s=>{const p=$("#f-pass"),e=$("#f-eye");p.type=s?"text":"password";e.innerHTML=ic(s?"eye-slash":"eye",20);e.setAttribute("aria-pressed",String(s));e.setAttribute("aria-label",s?"Скрыть пароль":"Показать пароль")};
+ form.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{if(i.getAttribute("aria-invalid")==="true")setE(i.id,"")}));
+ $("#f-eye").onclick=()=>showPw($("#f-pass").type==="password");
+ $("#f-gen").onclick=()=>{$("#f-pass").value=genPass();setE("f-pass","");showPw(true)};
+ form.onsubmit=e=>{e.preventDefault();
+  const v=id=>$("#"+id).value.trim(),nm=/^[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё\-' ]*$/,cap=s=>s?s[0].toUpperCase()+s.slice(1):s;let bad=null;
+  const chk=(id,m)=>{if(setE(id,m)&&!bad)bad=id};
+  chk("f-last",!v("f-last")?"Введите фамилию":!nm.test(v("f-last"))?"Только буквы":"");
+  chk("f-first",!v("f-first")?"Введите имя":!nm.test(v("f-first"))?"Только буквы":"");
+  chk("f-mid",v("f-mid")&&!nm.test(v("f-mid"))?"Только буквы":"");
+  const b=v("f-birth");let bm="";if(!b)bm="Укажите дату рождения";else{const age=(Date.now()-new Date(b))/31557600000;if(isNaN(age)||age<16||age>100)bm="Проверьте дату рождения"}chk("f-birth",bm);
+  const lg=v("f-login").toLowerCase();chk("f-login",!/^[a-z0-9._-]{3,32}$/.test(lg)?"3–32 символа: латиница, цифры, точка, дефис, подчёркивание":(lg==="admin"||P.some(p=>p.login&&p.login.toLowerCase()===lg))?"Такой логин уже занят":"");
+  const pw=$("#f-pass").value;chk("f-pass",pw.length<8?"Не короче 8 символов":"");
+  if(bad){$("#"+bad).focus();return}
+  const last=cap(v("f-last")),first=cap(v("f-first")),mid=cap(v("f-mid")),mk=()=>({state:"none",a:Array(NQ).fill(null),started:""});
+  const u={id:P.length,name:[last,first,mid].filter(Boolean).join(" "),first,mid,br:"Филиал не указан",login:lg,pw,birth:b,created:Date.now(),f:{"38":mk(),"178":mk()}};
+  P.push(u);saveU();uRender();
+  $("#ab").innerHTML=`<div class="okbox"><div class="okic">${ic("check-circle",32)}</div><div class="dh-name" style="font-size:20px">Участник добавлен</div><p class="muted" style="margin:6px 0 0">${esc(u.name)}</p><dl class="cred"><dt>Логин</dt><dd>${esc(u.login)}</dd><dt>Пароль</dt><dd>${esc(u.pw)}</dd></dl><p class="tiny">Передайте данные участнику. В демо пароль хранится в этом браузере; в рабочей версии — только в виде хэша, и повторно он не показывается.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" id="o-copy">Скопировать данные</button><button class="btn ghost" id="o-more">Добавить ещё</button></div></div>`;
+  $("#o-copy").onclick=()=>{const t=`${u.name}\nЛогин: ${u.login}\nПароль: ${u.pw}`,l=$("#o-copy");const ok=()=>l.textContent="Скопировано",no=()=>l.textContent="Не удалось скопировать";try{navigator.clipboard.writeText(t).then(ok,no)}catch(e){no()}};
+  $("#o-more").onclick=()=>{$("#ab").innerHTML=addForm();bindAdd();$("#f-last").focus()};
+  $("#o-copy").focus()}}
+$("#ax").onclick=closeAdd;
+$("#addDrawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...e.currentTarget.querySelectorAll("button:not([disabled]),input")];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});
+
 /* drawer */
 let lastFocus=null;
 function openDrawer(p,f){f=f||(p.f["38"].state!=="none"?"38":"178");
@@ -536,8 +638,8 @@ function openDrawer(p,f){f=f||(p.f["38"].state!=="none"?"38":"178");
   document.querySelectorAll("#dseg button").forEach(b=>b.onclick=()=>{f=b.dataset.f;draw()});};
  draw();lastFocus=document.activeElement;const dr=$("#drawer");dr.inert=false;dr.classList.add("on");$("#scrim").classList.add("on");dr.setAttribute("aria-hidden","false");$("#dx").focus();}
 const closeD=()=>{const dr=$("#drawer");if(!dr.classList.contains("on"))return;dr.classList.remove("on");$("#scrim").classList.remove("on");dr.setAttribute("aria-hidden","true");dr.inert=true;if(lastFocus&&lastFocus.isConnected)lastFocus.focus()};
-$("#dx").onclick=closeD;$("#scrim").onclick=closeD;
-$("#drawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...e.currentTarget.querySelectorAll("button:not([disabled])")];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeD()});
+$("#dx").onclick=closeD;$("#scrim").onclick=()=>{closeD();closeAdd()};
+$("#drawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...e.currentTarget.querySelectorAll("button:not([disabled])")];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}});document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeD();closeAdd()}});
 
 /* ═════ C ═════ */
 let cF="38",sel=null;
@@ -557,14 +659,15 @@ function cRender(){const f=cF;document.querySelectorAll("#C-fap button").forEach
  else $("#C-detail").innerHTML='<span class="tiny">Выберите клетку в матрице</span>';
  $("#C-hard").innerHTML=pct.map((v,k)=>({v,k})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v).slice(0,5).map(x=>`<div><b>№${x.k+1}</b><div class="pbar"><i style="width:${x.v}%;background:${x.v<50?"var(--rd)":"var(--bl)"}"></i></div><span class="tiny" style="text-align:right">${x.v}%</span></div>`).join("");
  $("#C-branch").innerHTML=BR.map(b=>{const d=done.filter(p=>p.br===b);return{b,v:d.length?Math.round(d.reduce((s,p)=>s+score(p,f),0)/d.length/NQ*100):null}}).sort((a,b)=>(b.v??-1)-(a.v??-1)).map(x=>`<div><div class="l"><span>${esc(x.b)}</span><b style="color:var(--dk)">${x.v==null?"—":x.v+"%"}</b></div><div class="pbar"><i style="width:${x.v||0}%"></i></div></div>`).join("");
+uRender();
 }
 document.querySelectorAll("#C-fap button").forEach(b=>b.onclick=()=>{cF=b.dataset.f;sel=null;cRender()});
 cRender();
 
 /* навигация прототипа */
 const ls=document.getElementById("loginScreen");
-function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));ls.classList.toggle("off",id!=="login");if(id==="login"){ls.classList.remove("anim");void ls.offsetWidth;ls.classList.add("anim");document.getElementById("form").reset();document.querySelectorAll("#form .err").forEach(e=>e.classList.remove("on"));document.querySelectorAll("#form input").forEach(i=>i.setAttribute("aria-invalid","false"));document.getElementById("password").type="password";document.getElementById("eyeIco").icon=PI("eye");const tg=document.getElementById("toggle");tg.setAttribute("aria-pressed","false");tg.setAttribute("aria-label","Показать пароль")}if(id==="adm")cRender();if(id==="tst")aChoose();scrollTo(0,0)}
-document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.timer);closeD();show("login")});
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));ls.classList.toggle("off",id!=="login");if(id==="login"){ls.classList.remove("anim");void ls.offsetWidth;ls.classList.add("anim");document.getElementById("form").reset();document.querySelectorAll("#form .err").forEach(e=>e.classList.remove("on"));document.querySelectorAll("#form input").forEach(i=>i.setAttribute("aria-invalid","false"));document.getElementById("password").type="password";document.getElementById("eyeIco").icon=PI("eye");const tg=document.getElementById("toggle");tg.setAttribute("aria-pressed","false");tg.setAttribute("aria-label","Показать пароль")}if(id==="adm")cRender();if(id==="tst"){setUser();aChoose()}scrollTo(0,0)}
+document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.timer);closeD();closeAdd();show("login")});
 </script>
 <script>
 (function(){
@@ -581,7 +684,11 @@ document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.t
     if(l||p){(l?login:pass).focus();return}
     btn.disabled=true; document.getElementById('submitTxt').textContent='Проверяем…';
     // Прототип: логин admin — админ-панель, любой другой — тестирование
-    setTimeout(function(){ btn.disabled=false; document.getElementById('submitTxt').textContent='Войти'; show(login.value.trim().toLowerCase()==='admin'?'adm':'tst'); },600);
+    setTimeout(function(){ btn.disabled=false; document.getElementById('submitTxt').textContent='Войти'; var lg=login.value.trim().toLowerCase();
+      if(lg==='admin'){startSession(null);show('adm');return}
+      var u=findUser(lg);
+      if(u&&u.pw!==pass.value){alertBox.textContent='Неверный логин или пароль';alertBox.className='alert bad on';pass.focus();return}
+      startSession(u);show('tst'); },600);
   });
 })();
 </script>
