@@ -1,3 +1,14 @@
-node_modules/
+# В репозиторий попадает только публичный набор прототипа.
+/*
+!/.gitignore
+!/.nojekyll
+!/README.md
+!/index.html
+!/CLAUDE.md
+!/design-reference/
+!/design/
+/design/*
+!/design/logos/
+!/design/fonts/
+/design/fonts/*condensed*
 .DS_Store
-.env*
