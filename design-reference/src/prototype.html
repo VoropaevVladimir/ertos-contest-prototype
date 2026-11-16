@@ -499,6 +499,7 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
     <img src="../../design/logos/emblem-ru.svg" alt="Госкорпорация по ОрВД">
     <div class="ttl">Конкурс профессионального мастерства<small>служба ЭРТОС · тестирование</small></div>
     <div class="sp"></div>
+    <a class="btn ghost" href="results.html" style="height:36px;padding:0 14px;text-decoration:none"><script>document.write(ic("trophy",16))</script>Итоги конкурса</a>
     <div class="user"><span class="muted" id="uName">Иванов И. И.</span><div class="ava" id="uAva">ИИ</div><button class="btn ghost logout" style="height:36px;padding:0 14px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
   </header>
   <div class="wrap" id="A-root"></div>
@@ -728,7 +729,10 @@ cRender();
 /* навигация прототипа */
 const ls=document.getElementById("loginScreen");
 function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));ls.classList.toggle("off",id!=="login");if(id==="login"){ls.classList.remove("anim");void ls.offsetWidth;ls.classList.add("anim");document.getElementById("form").reset();document.querySelectorAll("#form .err").forEach(e=>e.classList.remove("on"));document.querySelectorAll("#form input").forEach(i=>i.setAttribute("aria-invalid","false"));document.getElementById("password").type="password";document.getElementById("eyeIco").icon=PI("eye");const tg=document.getElementById("toggle");tg.setAttribute("aria-pressed","false");tg.setAttribute("aria-label","Показать пароль")}if(id==="adm")cRender();if(id==="tst"){setUser();aChoose()}scrollTo(0,0)}
-document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.timer);closeD();closeAdd();show("login")});
+document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.timer);closeD();closeAdd();try{sessionStorage.removeItem("ertos_s")}catch(e){}show("login")});
+/* сеанс держится на вкладке: после перехода на «Итоги конкурса» и возврата участник остаётся в кабинете (демо) */
+const sess=(r,l)=>{try{sessionStorage.setItem("ertos_s",JSON.stringify({r,l}))}catch(e){}};
+try{const s=JSON.parse(sessionStorage.getItem("ertos_s")||"null");if(s&&s.r==="adm"){startSession(null);show("adm")}else if(s&&s.r==="tst"){startSession(findUser(s.l));show("tst")}}catch(e){}
 </script>
 <script>
 (function(){
@@ -746,10 +750,10 @@ document.querySelectorAll(".logout").forEach(b=>b.onclick=()=>{clearInterval(A.t
     btn.disabled=true; document.getElementById('submitTxt').textContent='Проверяем…';
     // Прототип: логин admin — админ-панель, любой другой — тестирование
     setTimeout(function(){ btn.disabled=false; document.getElementById('submitTxt').textContent='Войти'; var lg=login.value.trim().toLowerCase();
-      if(lg==='admin'){startSession(null);show('adm');return}
+      if(lg==='admin'){sess('adm','admin');startSession(null);show('adm');return}
       var u=findUser(lg);
       if(u&&u.pw!==pass.value){alertBox.textContent='Неверный логин или пароль';alertBox.className='alert bad on';pass.focus();return}
-      startSession(u);show('tst'); },600);
+      sess('tst',lg);startSession(u);show('tst'); },600);
   });
 })();
 </script>
