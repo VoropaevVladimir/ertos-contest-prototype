@@ -274,6 +274,7 @@
 @media (max-width:900px){.card,#tst .fap{border-radius:20px}}
 @media (max-width:1100px){#adm .twocol{grid-template-columns:1fr}}
 @media (max-width:800px){#C .wrapc{padding:16px}.kpis{grid-template-columns:1fr 1fr}}
+.chip.timer{height:38px;padding:0 18px;gap:8px;font-size:17px}
 .drawer .x{transition:color .15s,background .15s}
 .drawer .x:hover{color:var(--bad);background:#fde8e9}
 /* ───────── участники и форма добавления ───────── */
@@ -569,7 +570,7 @@ function aChoose(){
 function aStart(){clearInterval(A.timer);if(left()===0){aRes();return}A.timer=setInterval(()=>{const t=$("#A-time");if(t)t.textContent=fmt(left());if(left()===0)aRes()},1000);aQ()}
 function aQ(){
  A.qs=Date.now();const b=BANK[A.fap],q=b.qs[A.i],n=b.qs.length,done=Object.keys(A.ans).length;
- A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left-bold",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",15)} <span id="A-time">${fmt(left())}</span></span></div>
+ A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left-bold",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",20)}<span id="A-time">${fmt(left())}</span></span></div>
  <div class="bar"><i style="width:${done/n*100}%"></i></div><p class="tiny" style="margin:8px 0 18px">Отвечено ${done} из ${n}</p>
  <div class="card qcard rise"><div class="qnum">ВОПРОС ${A.i+1} ИЗ ${n}</div><div class="qtext">${esc(q.q)}</div>
  <div class="opts" role="radiogroup">${q.o.map((o,j)=>`<button class="opt" role="radio" aria-checked="${A.ans[A.i]===j}" data-j="${j}"><span class="k">${KEYS[j]}</span><span class="ot">${esc(o)}</span><morph-icon class="chk" size="18"></morph-icon></button>`).join("")}</div>
