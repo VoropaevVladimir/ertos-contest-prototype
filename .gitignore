@@ -13,5 +13,3 @@
 /design/fonts/*condensed*
 .DS_Store
 
-# Банк вопросов — только локально
-design-reference/src/fap38-questions.js
