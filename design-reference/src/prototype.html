@@ -553,7 +553,7 @@ const BANK={
 };
 /* ФАП № 38: полный банк из локального файла; если файла нет (публичная версия) — остаются 5 примеров */
 const REAL38=!!(window.FAP38_BANK&&FAP38_BANK.length);
-if(REAL38){BANK["38"].qs=FAP38_BANK.map(x=>({q:x.q,o:x.o,c:x.c,ref:x.ref,why:x.why}));BANK["38"].shuffle=true;BANK["38"].take=10}
+if(REAL38){BANK["38"].qs=FAP38_BANK.map(x=>({q:x.q,o:x.o,c:x.c,ref:x.ref,why:x.why}));BANK["38"].shuffle=true;BANK["38"].shuffleOpts=true;BANK["38"].take=10}
 /* случайный порядок вопросов: новый при каждой попытке (Fisher–Yates, crypto) */
 const shuffle=n=>{const a=Array.from({length:n},(_,i)=>i),r=new Uint32Array(n);crypto.getRandomValues(r);for(let i=n-1;i>0;i--){const j=r[i]%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const KEYS="АБВГ";
@@ -564,7 +564,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 const radar=(cls)=>`<svg viewBox="0 0 200 200" class="${cls||""}" aria-hidden="true"><g fill="none" stroke="#fff" stroke-opacity=".7"><circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="90"/><path d="M100 0V200M0 100H200"/></g></svg>`;
 
 /* ═════ A ═════ */
-const A={fap:null,i:0,ans:{},order:[],end:0,qs:0,S:{},timer:null,root:$("#A-root")};
+const A={fap:null,i:0,ans:{},order:[],perm:[],end:0,qs:0,S:{},timer:null,root:$("#A-root")};
 let CUR=null,lastAdd=null;
 const greet=()=>CUR?esc([CUR.first,CUR.mid].filter(Boolean).join(" ")):"Иван Иванович";
 const left=()=>Math.max(0,Math.round((A.end-Date.now())/1000));
@@ -574,17 +574,17 @@ function aChoose(){
  <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>40 минут на один тест</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
  A.root.querySelectorAll(".fap").forEach(b=>b.onclick=()=>aEnter(b.dataset.fap));
 }
-function aEnter(k){const isNew=!A.S[k],n=BANK[k].qs.length;const s=A.S[k]||(A.S[k]={ans:{},end:Date.now()+DURATION*1000,done:false,order:BANK[k].shuffle?shuffle(n).slice(0,BANK[k].take||n):Array.from({length:n},(_,i)=>i)});if(isNew)trackStart(k,s.order);A.fap=k;A.i=0;A.ans=s.ans;A.order=s.order;A.end=s.end;aStart()}
+function aEnter(k){const isNew=!A.S[k],n=BANK[k].qs.length;let s=A.S[k];if(!s){const order=BANK[k].shuffle?shuffle(n).slice(0,BANK[k].take||n):Array.from({length:n},(_,i)=>i);/* порядок вариантов ответа тоже случайный: perm[позиция вопроса][показанный вариант] = номер варианта в банке */const perm=order.map(()=>BANK[k].shuffleOpts?shuffle(4):[0,1,2,3]);s=A.S[k]={ans:{},end:Date.now()+DURATION*1000,done:false,order,perm}}if(isNew)trackStart(k,s.order);A.fap=k;A.i=0;A.ans=s.ans;A.order=s.order;A.perm=s.perm;A.end=s.end;aStart()}
 function aStart(){clearInterval(A.timer);if(left()===0){aRes();return}A.timer=setInterval(()=>{const t=$("#A-time");if(t)t.textContent=fmt(left());if(left()===0)aRes()},1000);aQ()}
 function aQ(){
  A.qs=Date.now();const b=BANK[A.fap],q=b.qs[A.order[A.i]],n=A.order.length,done=Object.keys(A.ans).length;
  A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left-bold",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",20)}<span id="A-time">${fmt(left())}</span></span></div>
  <div class="bar"><i style="width:${done/n*100}%"></i></div><p class="tiny" style="margin:8px 0 18px">Отвечено ${done} из ${n}</p>
  <div class="card qcard rise"><div class="qnum">ВОПРОС ${A.i+1} ИЗ ${n}</div><div class="qtext">${esc(q.q)}</div>
- <div class="opts" role="radiogroup">${q.o.map((o,j)=>`<button class="opt" role="radio" aria-checked="${A.ans[A.i]===j}" data-j="${j}"><span class="k">${KEYS[j]}</span><span class="ot">${esc(o)}</span><morph-icon class="chk" size="18"></morph-icon></button>`).join("")}</div>
+ <div class="opts" role="radiogroup">${A.perm[A.i].map((oi,j)=>`<button class="opt" role="radio" aria-checked="${A.ans[A.i]===j}" data-j="${j}"><span class="k">${KEYS[j]}</span><span class="ot">${esc(q.o[oi])}</span><morph-icon class="chk" size="18"></morph-icon></button>`).join("")}</div>
  <div class="nav"><button class="btn ghost" id="A-prev" ${A.i?"":"disabled"}>Назад</button><button class="btn" id="A-next">${A.i<n-1?"Следующий вопрос "+ic("arrow-right",18):"Завершить тест "+ic("flag-checkered",18)}</button></div>
  <div class="dots">${A.order.map((_,k)=>`<button data-k="${k}" class="${k===A.i?"cur":A.ans[k]!=null?"ans":""}">${k+1}</button>`).join("")}</div>
- <p class="demo-note">${b.shuffle?`Вам выпадает ${n} случайных вопросов из банка в ${b.qs.length}. При каждой новой попытке набор и порядок вопросов новые.`:"Вопросы — примеры для макета по тексту ФАП. Банк вопросов утверждает организатор."}</p></div>`;
+ <p class="demo-note">${b.shuffle?`Вам выпадает ${n} случайных вопросов из банка в ${b.qs.length}. При каждой новой попытке набор вопросов, их порядок и порядок вариантов ответа новые.`:"Вопросы — примеры для макета по тексту ФАП. Банк вопросов утверждает организатор."}</p></div>`;
  const opts=[...A.root.querySelectorAll(".opt")];
  opts.forEach(o=>{o.querySelector(".chk").icon=PI(A.ans[A.i]===+o.dataset.j?"check-circle":"circle")});
  opts.forEach((o,j)=>{o.tabIndex=(A.ans[A.i]===j||(A.ans[A.i]==null&&j===0))?0:-1;o.onkeydown=e=>{const d={ArrowDown:1,ArrowRight:1,ArrowUp:-1,ArrowLeft:-1}[e.key];if(!d)return;e.preventDefault();const t=opts[(j+d+opts.length)%opts.length];t.focus();t.click()}});
@@ -649,7 +649,7 @@ const dmy=s=>s?s.split("-").reverse().join("."):"—";
 function startSession(u){CUR=u;clearInterval(A.timer);A.S={};if(u)["38","178"].forEach(k=>{if(u.f[k].state==="done")A.S[k]={ans:{},end:0,done:true}})}
 function setUser(){$("#uName").textContent=CUR?short(CUR.name):"Иванов И. И.";$("#uAva").textContent=CUR?ini(CUR.name):"ИИ"}
 function trackStart(k,order){if(!CUR)return;CUR.f[k]={state:"live",asked:order.slice(),a:Array(NQ(k)).fill(null),started:new Date().toTimeString().slice(0,5)};saveU()}
-function trackAns(j){if(!CUR)return;const f=CUR.f[A.fap];f.state="live";f.a[A.order[A.i]]={v:j,t:Math.max(1,Math.round((Date.now()-A.qs)/1000))};saveU()}
+function trackAns(j){if(!CUR)return;const f=CUR.f[A.fap];f.state="live";f.a[A.order[A.i]]={v:A.perm[A.i][j],t:Math.max(1,Math.round((Date.now()-A.qs)/1000))};saveU()}
 function trackDone(){if(!CUR)return;CUR.f[A.fap].state="done";saveU()}
 
 let HL=null;
