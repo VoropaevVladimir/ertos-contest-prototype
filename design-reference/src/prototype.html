@@ -514,7 +514,7 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
     <div id="view-an">
     <div class="kpis" id="C-kpis"></div>
     <div class="twocol">
-      <div class="card mx"><h2><script>document.write(ic("chart-bar",18))</script>Матрица ответов</h2><div class="tiny">Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.</div>
+      <div class="card mx"><h2><script>document.write(ic("chart-bar",18))</script>Матрица ответов</h2><div class="tiny" id="C-sub">Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.</div>
         <div class="matrix" id="C-mx"></div>
         <div class="legend"><span style="color:var(--bl)"><script>document.write(ic("check",16))</script> <b style="color:var(--ink2);font-weight:400">Верно</b></span><span style="color:#e0444b"><script>document.write(ic("x",16))</script> <b style="color:var(--ink2);font-weight:400">Неверно</b></span><span><i style="background:#eef0f4"></i>Нет ответа</span></div></div>
       <div class="side">
@@ -735,19 +735,26 @@ $("#drawer").addEventListener("keydown",e=>{if(e.key!=="Tab")return;const f=[...
 let cF="38",sel=null;
 function cRender(){const f=cF;document.querySelectorAll("#C-fap button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===f));
  const started=P.filter(p=>p.f[f].state!=="none");
- const pct=QS[f].map((q,k)=>{const a=started.map(p=>p.f[f].a[k]).filter(Boolean);return a.length?Math.round(a.filter(x=>x.v===q.c).length/a.length*100):null});
+ /* столбцы матрицы — порядковые номера вопросов в тесте участника (у каждого свой набор), а не весь банк */
+ const NC=ASK(f);
+ const askedOf=p=>{const a=p.f[f].asked;return a&&a.length?a:Array.from({length:NC},(_,i)=>i)};
+ const colOf=(p,c)=>{const qi=askedOf(p)[c];return {qi,q:QS[f][qi],x:p.f[f].a[qi]}};
+ const pct=Array.from({length:NC},(_,c)=>{const a=started.map(p=>colOf(p,c)).filter(o=>o.x&&o.q);return a.length?Math.round(a.filter(o=>o.x.v===o.q.c).length/a.length*100):null});
+ $("#C-sub").textContent=f==="38"&&REAL38?`Строки — участники, столбцы — порядковые номера вопросов в тесте участника (у каждого свой набор из ${NC} вопросов). Нажмите на клетку, чтобы увидеть вопрос и ответ.`:"Строки — участники, столбцы — вопросы. Нажмите на клетку, чтобы увидеть ответ.";
  const done=P.filter(p=>p.f[f].state==="done");const avg=done.length?Math.round(done.reduce((s,p)=>s+score(p,f),0)/done.length/ASK(f)*100):0;
  const best=done.slice().sort((a,b)=>score(b,f)-score(a,f))[0];
  $("#C-kpis").innerHTML=[["Завершили",done.length+"<small> / "+P.length+"</small>","flag-checkered"],["Средний результат",avg+"<small>%</small>","gauge"],["Лучший результат",best?score(best,f)+"<small>/"+ASK(f)+" · "+short(best.name)+"</small>":"—","medal"],["Среднее время на вопрос",(()=>{const a=started.flatMap(p=>p.f[f].a.filter(Boolean));return a.length?Math.round(a.reduce((s,x)=>s+x.t,0)/a.length):0})()+"<small> с</small>","timer"]].map(([l,v,ii])=>`<div class="card kpi"><div class="tiny"><span class="ki">${ic(ii,20)}</span>${l}</div><div class="v">${v}</div></div>`).join("");
- const mx=$("#C-mx");mx.style.gridTemplateColumns=`190px repeat(${NQ(f)},minmax(22px,1fr)) 44px`;
- let h=`<div></div>${QS[f].map((_,k)=>`<div class="h">${k+1}</div>`).join("")}<div class="h">Итог</div>`;
- started.forEach((p,r)=>{h+=`<div class="nm">${esc(short(p.name))} <small>${p.f[f].state==="live"?"· идёт":""}</small></div>`+QS[f].map((q,k)=>{const x=p.f[f].a[k];const m=!x?"e":x.v===q.c?"y":"n";const isSel=sel&&sel.p===p.id&&sel.k===k;return `<button class="cell ${m} ${isSel?"sel":""}" data-p="${p.id}" data-k="${k}" aria-label="${esc(short(p.name))}, вопрос ${k+1}: ${m==="y"?"верно":m==="n"?"неверно":"нет ответа"}">${m==="y"?ic("check",24,"ci"):m==="n"?ic("x",24,"ci"):""}</button>`}).join("")+`<div class="tot">${score(p,f)}</div>`});
+ const mx=$("#C-mx");mx.style.gridTemplateColumns=`190px repeat(${NC},minmax(22px,36px)) 44px`;mx.style.justifyContent="start";mx.style.minWidth=(190+44+NC*26+(NC+1)*4)+"px";
+ let h=`<div></div>${Array.from({length:NC},(_,k)=>`<div class="h">${k+1}</div>`).join("")}<div class="h">Итог</div>`;
+ started.forEach((p,r)=>{h+=`<div class="nm">${esc(short(p.name))} <small>${p.f[f].state==="live"?"· идёт":""}</small></div>`+Array.from({length:NC},(_,k)=>{const {q,x}=colOf(p,k);const m=!x||!q?"e":x.v===q.c?"y":"n";const isSel=sel&&sel.p===p.id&&sel.k===k;return `<button class="cell ${m} ${isSel?"sel":""}" data-p="${p.id}" data-k="${k}" aria-label="${esc(short(p.name))}, вопрос ${k+1}: ${m==="y"?"верно":m==="n"?"неверно":"нет ответа"}">${m==="y"?ic("check",24,"ci"):m==="n"?ic("x",24,"ci"):""}</button>`}).join("")+`<div class="tot">${score(p,f)}</div>`});
  h+=`<div class="nm tiny" style="color:var(--ink3)">% верных</div>`+pct.map(v=>`<div class="pct" style="${v!=null&&v<50?"color:var(--bad);font-weight:700":""}">${v==null?"—":v}</div>`).join("")+`<div></div>`;
  mx.innerHTML=h;
  mx.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{sel={p:+c.dataset.p,k:+c.dataset.k};cRender();const n=mx.querySelector(".cell.sel");if(n)n.focus({preventScroll:true})});
- if(sel){const p=P[sel.p],q=QS[f][sel.k],x=p.f[f].a[sel.k];$("#C-detail").innerHTML=`<div class="tiny">${esc(p.name)} · вопрос ${sel.k+1}</div><div class="q">${esc(q.q)}</div>${q.o.map((o,j)=>`<div style="padding:6px 10px;border-radius:10px;margin-top:4px;${j===q.c?"background:#e3f0fa;color:var(--dk);font-weight:500":x&&x.v===j?"background:#fde8e9;color:var(--bad)":""}">${L[j]}. ${esc(o)}${j===q.c?" "+ic("check",16):""}${x&&x.v===j&&j!==q.c?" "+ic("x",16)+" ответ участника":""}</div>`).join("")}<div class="tiny" style="margin-top:8px">${x?"Время на ответ: "+x.t+" с":"Нет ответа"}</div><button class="btn ghost" style="margin-top:12px;height:38px;width:100%" id="C-open">Все ответы участника</button>`;$("#C-open").onclick=()=>openDrawer(p,f)}
+ if(sel&&colOf(P[sel.p],sel.k).q){const p=P[sel.p],{q,x,qi}=colOf(p,sel.k);$("#C-detail").innerHTML=`<div class="tiny">${esc(p.name)} · вопрос ${sel.k+1} в тесте${f==="38"&&REAL38?` (№${qi+1} в банке)`:""}</div><div class="q">${esc(q.q)}</div>${q.o.map((o,j)=>`<div style="padding:6px 10px;border-radius:10px;margin-top:4px;${j===q.c?"background:#e3f0fa;color:var(--dk);font-weight:500":x&&x.v===j?"background:#fde8e9;color:var(--bad)":""}">${L[j]}. ${esc(o)}${j===q.c?" "+ic("check",16):""}${x&&x.v===j&&j!==q.c?" "+ic("x",16)+" ответ участника":""}</div>`).join("")}<div class="tiny" style="margin-top:8px">${x?"Время на ответ: "+x.t+" с":"Нет ответа"}</div><button class="btn ghost" style="margin-top:12px;height:38px;width:100%" id="C-open">Все ответы участника</button>`;$("#C-open").onclick=()=>openDrawer(p,f)}
  else $("#C-detail").innerHTML='<span class="tiny">Выберите клетку в матрице</span>';
- $("#C-hard").innerHTML=pct.map((v,k)=>({v,k})).filter(x=>x.v!=null).sort((a,b)=>a.v-b.v).slice(0,5).map(x=>`<div><b>№${x.k+1}</b><div class="pbar"><i style="width:${x.v}%;background:${x.v<50?"var(--rd)":"var(--bl)"}"></i></div><span class="tiny" style="text-align:right">${x.v}%</span></div>`).join("");
+ const qst={};started.forEach(p=>askedOf(p).forEach(qi=>{const x=p.f[f].a[qi],q=QS[f][qi];if(x&&q){const s=qst[qi]||(qst[qi]={k:qi,n:0,ok:0});s.n++;if(x.v===q.c)s.ok++}}));
+ const hard=Object.values(qst).map(s=>({k:s.k,n:s.n,v:Math.round(s.ok/s.n*100)})).sort((a,b)=>(b.n>=2)-(a.n>=2)||a.v-b.v||b.n-a.n).slice(0,5);
+ $("#C-hard").innerHTML=hard.map(x=>`<div title="ответов: ${x.n}"><b>№${x.k+1}</b><div class="pbar"><i style="width:${x.v}%;background:${x.v<50?"var(--rd)":"var(--bl)"}"></i></div><span class="tiny" style="text-align:right">${x.v}%</span></div>`).join("");
 uRender();
 }
 document.querySelectorAll("#C-fap button").forEach(b=>b.onclick=()=>{cF=b.dataset.f;sel=null;cRender()});
