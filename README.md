@@ -20,7 +20,6 @@ https://voropaevvladimir.github.io/ertos-contest-prototype/
 - `design-reference/tailwind` — пресет Tailwind с токенами
 - `design-reference/screenshots` — эталонные скриншоты экранов
 - `design/logos` — логотипы
-- `CLAUDE.md` — дизайн-правила
 
 Вопросы в прототипе — примеры, не утверждённый банк.
 
