@@ -16,6 +16,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .btn:hover{background:#00649f;box-shadow:var(--sh-btn)}
 .btn:active{transform:translateY(1px)}
 .btn.ghost{background:var(--white);color:var(--dk);border:1px solid var(--line2)}
+.btn.back-to-tasks{height:40px;padding:0 14px;font-size:14px;font-weight:500;text-decoration:none;white-space:nowrap}
+.btn.back-to-tasks svg{width:13px;height:13px}
 .btn.ghost:hover{background:#eef2f8;box-shadow:none}
 .btn.dark{background:var(--dk)}
 .btn:focus-visible,.opt:focus-visible,.chip:focus-visible{outline:3px solid var(--dk);outline-offset:2px}

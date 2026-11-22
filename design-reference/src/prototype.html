@@ -2,7 +2,7 @@
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Сайт конкурса ЭРТОС — прототип</title>
 <style>
-@import url("common.css");
+@import url("common.css?v=back-to-tasks");
 .screen{display:none;min-height:100vh}
 .screen.on{display:block;animation:vin .45s cubic-bezier(.2,.8,.2,1)}
 #loginScreen{
@@ -235,6 +235,15 @@
 #adm .topc img{height:34px}
 #adm .topc .sp{flex:1}
 #adm .topc b{color:var(--dk)}
+#result-notice{position:fixed;right:22px;bottom:22px;z-index:90;width:min(420px,calc(100vw - 32px));padding:18px 18px 16px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 14px 40px rgba(13,16,48,.18);display:grid;grid-template-columns:38px 1fr 30px;gap:12px;align-items:start;opacity:0;transform:translateY(14px);pointer-events:none;transition:opacity .22s,transform .22s}
+#result-notice.on{opacity:1;transform:none;pointer-events:auto}
+#result-notice .rn-icon{width:38px;height:38px;border-radius:12px;background:#e8f2fa;color:var(--dk);display:grid;place-items:center}
+#result-notice .rn-title{font-size:15px;font-weight:700;color:var(--dk);line-height:1.35}
+#result-notice .rn-copy{font-size:13px;color:var(--ink2);margin-top:4px;line-height:1.45}
+#result-notice a{display:inline-flex;margin-top:10px;color:var(--bl);font-size:13px;font-weight:700;text-decoration:none}
+#result-notice a:hover{text-decoration:underline}
+#result-notice .rn-close{width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:var(--ink3);display:grid;place-items:center}
+#result-notice .rn-close:hover{background:var(--bg);color:var(--dk)}
 #adm .wrapc{padding:24px;max-width:1440px;margin:0 auto 120px}
 #adm .twocol{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-top:16px}
 #adm .mx{padding:20px;overflow:auto}
@@ -509,7 +518,7 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
 </section>
 
 <section class="screen" id="adm">
-  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="seg" id="adm-tabs" role="group" aria-label="Раздел админ-панели"><button data-t="an" aria-pressed="true">Аналитика</button><button data-t="pp" aria-pressed="false">Участники <span id="tab-n"></span></button></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
+  <div class="topc"><img src="../../design/logos/emblem-ru.svg" alt=""><div><b>Аналитика ответов</b><div class="tiny">Конкурс профмастерства ЭРТОС</div></div><div class="seg" id="adm-tabs" role="group" aria-label="Раздел админ-панели"><button data-t="an" aria-pressed="true">Аналитика</button><button data-t="pp" aria-pressed="false">Участники <span id="tab-n"></span></button></div><div class="sp"></div><div class="seg" id="C-fap"><button data-f="38" aria-pressed="true">ФАП № 38</button><button data-f="178" aria-pressed="false">ФАП № 178</button></div><button class="btn js-add" style="height:40px"><script>document.write(ic("plus",16))</script>Добавить участника</button><button class="btn" id="send-result" style="height:40px"><script>document.write(ic("trophy",16))</script>Отправить результат</button><button class="btn ghost" style="height:40px"><script>document.write(ic("file-pdf",16))</script>Отчёт PDF</button><button class="btn ghost logout" style="height:40px"><script>document.write(ic("sign-out",16))</script>Выйти</button></div>
   <div class="wrapc">
     <div id="view-an">
     <div class="kpis" id="C-kpis"></div>
@@ -535,6 +544,7 @@ const PI=n=>MI.svgToIcon(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
   </div>
 </section>
 <div class="scrim" id="scrim"></div>
+<aside id="result-notice" role="status" aria-live="polite" aria-atomic="true"><span class="rn-icon"><script>document.write(ic("trophy",20))</script></span><div><div class="rn-title" id="rn-title">Результаты опубликованы</div><div class="rn-copy" id="rn-copy">Можете ознакомиться с результатами конкурса.</div><a href="results.html">К результатам</a></div><button class="rn-close" id="rn-close" type="button" aria-label="Закрыть уведомление"><script>document.write(ic("close",16))</script></button></aside>
 <aside class="drawer" id="drawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Ответы участника"><button class="x" id="dx" aria-label="Закрыть"><script>document.write(ic("close",20))</script></button><header id="dh"></header><div class="body" id="db"></div></aside>
 <aside class="drawer" id="addDrawer" aria-hidden="true" inert role="dialog" aria-modal="true" aria-label="Новый участник"><button class="x" id="ax" aria-label="Закрыть"><script>document.write(ic("close",20))</script></button><header><div class="eyebrow tiny">Участники</div><div class="dh-name">Новый участник</div></header><div class="body" id="ab"></div></aside>
 <script>
@@ -572,10 +582,18 @@ let CUR=null,lastAdd=null;
 const greet=()=>CUR?esc([CUR.first,CUR.mid].filter(Boolean).join(" ")):"Иван Иванович";
 const left=()=>Math.max(0,Math.round((A.end-Date.now())/1000));
 function aChoose(){
- A.root.innerHTML=`<div class="hello rise"><div class="eyebrow tiny">Шаг 1 из 2 · выбор теста</div><h1>Добрый день, ${greet()}</h1><p class="muted">Выберите федеральные авиационные правила, по которым будете проходить тестирование.</p></div>
+ A.root.innerHTML=`<div class="hello rise"><div class="eyebrow tiny">Этапы конкурса · 2 этапа</div><h1>Добрый день, ${greet()}</h1><p class="muted">Выберите этап конкурса: тестирование по федеральным авиационным правилам или письменный ответ по билету.</p></div>
+ <div class="faps"><button class="fap f38 rise" id="A-open-tests" style="animation-delay:.08s">${radar()}<span class="go">${ic("arrow-right-bold",22)}</span><div><div class="eyebrow" style="opacity:.8">Первый этап конкурса</div><div class="no">Этап 1</div><div class="nm">Тестирование по федеральным авиационным правилам</div></div><div class="meta"><span>ФАП № 38</span><span>ФАП № 178</span></div></button><a class="fap f178 rise" style="animation-delay:.16s;text-decoration:none" href="text-answer.html" aria-label="Перейти к письменному этапу конкурса">${radar()}<span class="go">${ic("arrow-right-bold",22)}</span><div><div class="eyebrow" style="opacity:.8">Второй этап конкурса</div><div class="no">Этап 2</div><div class="nm">Письменный этап конкурса</div></div><div class="meta"><span>Ответ по билету</span><span>Текст или Word</span></div></a></div>
+ <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>Ограничено, таймер виден в тесте</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
+ $("#A-open-tests").onclick=aChooseFap;
+}
+function aChooseFap(){
+ A.root.innerHTML=`<div class="testhead"><button class="btn ghost back-to-tasks" id="A-stageback" type="button">${ic("arrow-left-bold",16)} Назад к заданиям</button><span class="chip">Этап 1 · Тестирование</span><div class="sp"></div></div>
+ <div class="hello rise"><div class="eyebrow tiny">ФЕДЕРАЛЬНЫЕ АВИАЦИОННЫЕ ПРАВИЛА</div><h1>Выберите тест</h1><p class="muted">Для первого этапа выберите один из двух комплектов вопросов.</p></div>
  <div class="faps">${["38","178"].map((k,n)=>{const b=BANK[k];return `<button class="fap f${k} rise" style="animation-delay:${.08+n*.08}s" data-fap="${k}" ${A.S[k]&&A.S[k].done?"disabled":""}>${radar()}<span class="go">${ic("arrow-right-bold",22)}</span><div><div class="eyebrow" style="opacity:.8">Федеральные авиационные правила</div><div class="no">№ ${b.no}</div><div class="nm">${b.name}</div></div><div class="meta"><span>${ic("list-numbers",14)} ${b.take||b.qs.length} вопросов</span><span>${ic("timer",14)} ${b.durationMin||40} минут</span>${A.S[k]&&A.S[k].done?`<span>${ic("check-circle",14)} Пройден</span>`:`<span>${ic("repeat-once",14)} 1 попытка</span>`}</div></button>`}).join("")}</div>
  <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>Ограничено, таймер виден в тесте</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
- A.root.querySelectorAll(".fap").forEach(b=>b.onclick=()=>{const k=b.dataset.fap;if(k==="38"&&!REAL38&&!A.S[k])aGate38();else aEnter(k)});
+ $("#A-stageback").onclick=aChoose;
+ A.root.querySelectorAll(".fap[data-fap]").forEach(b=>b.onclick=()=>{const k=b.dataset.fap;if(k==="38"&&!REAL38&&!A.S[k])aGate38();else aEnter(k)});
 }
 /* набор вопросов попытки: по уровням сложности (у всех равная сложность), затем случайный порядок */
 function makeOrder(k,n){const b=BANK[k];if(!b.shuffle)return Array.from({length:n},(_,i)=>i);if(b.byLevel){let pick=[];for(const lv of Object.keys(b.byLevel)){const pool=b.qs.map((q,i)=>q.level===lv?i:-1).filter(i=>i>=0);pick=pick.concat(shuffle(pool.length).slice(0,b.byLevel[lv]).map(j=>pool[j]))}return shuffle(pick.length).map(j=>pick[j])}return shuffle(n).slice(0,b.take||n)}
@@ -589,13 +607,13 @@ async function aGate38(){
  A.root.innerHTML=`<div class="card res rise"><div class="resic">${ic("lock-key",44)}</div><div class="eyebrow tiny">ФАП № 38 · банк вопросов</div><h2 style="margin:10px 0 6px;color:var(--dk)">Банк вопросов защищён паролем</h2><p class="muted" style="margin:0 auto 18px;max-width:440px">Полный банк выложен в зашифрованном виде. Введите пароль, который вам передал организатор. Без пароля можно пройти тест на примерах.</p>
  <form id="g-form" novalidate style="max-width:380px;margin:0 auto;text-align:left"><label for="g-pw" style="display:block;font-weight:500;font-size:14px;margin-bottom:6px">Пароль</label><input class="fi" id="g-pw" type="password" autocomplete="off" spellcheck="false" aria-describedby="g-pw-e"><div class="ferr" id="g-pw-e" role="alert"></div>
  <div style="display:grid;gap:10px;margin-top:16px"><button class="btn" type="submit" id="g-ok" style="width:100%">Открыть банк</button><button class="btn ghost" type="button" id="g-skip" style="width:100%">Пройти с примерами</button></div></form>
- <button class="btn ghost" id="g-back" type="button" style="height:38px;margin-top:20px">${ic("arrow-left-bold",16)} Выбор теста</button></div>`;
+ <button class="btn ghost back-to-tasks" id="g-back" type="button" style="margin-top:20px">${ic("arrow-left-bold",16)} Назад к заданиям</button></div>`;
  $("#g-form").onsubmit=async e=>{e.preventDefault();const pw=$("#g-pw").value,er=$("#g-pw-e"),ok=$("#g-ok");er.classList.remove("on");if(!pw){er.textContent="Введите пароль";er.classList.add("on");return}ok.disabled=true;ok.textContent="Проверяем…";try{const d=await decryptBank(ENC38,pw.trim());sessionStorage.setItem("ertos_bank38",JSON.stringify(d));location.reload()}catch(x){er.textContent="Неверный пароль";er.classList.add("on");ok.disabled=false;ok.textContent="Открыть банк";$("#g-pw").select()}};
  $("#g-skip").onclick=()=>aEnter("38");$("#g-back").onclick=aChoose;$("#g-pw").focus()}
 function aStart(){clearInterval(A.timer);if(left()===0){aRes();return}A.timer=setInterval(()=>{const t=$("#A-time");if(t)t.textContent=fmt(left());if(left()===0)aRes()},1000);aQ()}
 function aQ(){
  A.qs=Date.now();const b=BANK[A.fap],q=b.qs[A.order[A.i]],n=A.order.length,done=Object.keys(A.ans).length;
- A.root.innerHTML=`<div class="testhead"><button class="btn ghost" id="A-back" style="height:40px">${ic("arrow-left-bold",16)} Выбор теста</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",20)}<span id="A-time">${fmt(left())}</span></span></div>
+ A.root.innerHTML=`<div class="testhead"><button class="btn ghost back-to-tasks" id="A-back" type="button">${ic("arrow-left-bold",16)} Назад к заданиям</button><span class="chip">${b.short}</span><div class="sp"></div><span class="chip timer">${ic("timer",20)}<span id="A-time">${fmt(left())}</span></span></div>
  <div class="bar"><i style="width:${done/n*100}%"></i></div><p class="tiny" style="margin:8px 0 18px">Отвечено ${done} из ${n}</p>
  <div class="card qcard rise"><div class="qnum">ВОПРОС ${A.i+1} ИЗ ${n}</div><div class="qtext">${esc(q.q)}</div>
  <div class="opts" role="radiogroup">${A.perm[A.i].map((oi,j)=>`<button class="opt" role="radio" aria-checked="${A.ans[A.i]===j}" data-j="${j}"><span class="k">${KEYS[j]}</span><span class="ot">${esc(q.o[oi])}</span><morph-icon class="chk" size="18"></morph-icon></button>`).join("")}</div>
@@ -759,6 +777,16 @@ uRender();
 }
 document.querySelectorAll("#C-fap button").forEach(b=>b.onclick=()=>{cF=b.dataset.f;sel=null;cRender()});
 cRender();
+
+/* Демонстрация доставки между открытыми вкладками этого браузера. Для реальных
+   устройств понадобится серверная подписка на Web Push. */
+const resultChannel=typeof BroadcastChannel!="undefined"?new BroadcastChannel("ertos-result-announcements"):null;
+let noticeTimer;
+function showResultNotice(sender=false){const box=$("#result-notice");$("#rn-title").textContent=sender?"Уведомление отправлено":"Результаты опубликованы";$("#rn-copy").textContent=sender?"Тестовое сообщение отправлено во все открытые вкладки сайта в этом браузере.":"Можете ознакомиться с результатами конкурса.";box.classList.add("on");clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>box.classList.remove("on"),10000)}
+$("#rn-close").onclick=()=>$("#result-notice").classList.remove("on");
+if(resultChannel)resultChannel.onmessage=e=>{if(e.data&&e.data.type==="results-published")showResultNotice(false)};
+$("#send-result").onclick=()=>{const msg={type:"results-published",sentAt:Date.now()};if(resultChannel)resultChannel.postMessage(msg);else{try{localStorage.setItem("ertos-result-announcement",JSON.stringify(msg));localStorage.removeItem("ertos-result-announcement")}catch(e){}}showResultNotice(true)};
+window.addEventListener("storage",e=>{if(e.key==="ertos-result-announcement"&&e.newValue)showResultNotice(false)});
 
 /* навигация прототипа */
 const ls=document.getElementById("loginScreen");
