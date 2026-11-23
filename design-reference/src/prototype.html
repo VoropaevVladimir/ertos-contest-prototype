@@ -595,8 +595,8 @@ function aChoose(){
  $("#A-open-tests").onclick=aChooseFap;
 }
 function aChooseFap(){
- A.root.innerHTML=`<div class="testhead"><button class="btn ghost back-to-tasks" id="A-stageback" type="button">${ic("arrow-left-bold",16)} Назад к заданиям</button><span class="chip">Этап 1 · Тестирование</span><div class="sp"></div></div>
- <div class="hello rise"><div class="eyebrow tiny">ФЕДЕРАЛЬНЫЕ АВИАЦИОННЫЕ ПРАВИЛА</div><h1>Выберите тест</h1><p class="muted">Для первого этапа выберите один из двух комплектов вопросов.</p></div>
+ A.root.innerHTML=`<div class="testhead"><button class="btn ghost back-to-tasks" id="A-stageback" type="button">${ic("arrow-left-bold",16)} Назад к заданиям</button><div class="sp"></div></div>
+ <div class="hello rise"><div class="eyebrow">Этап 1 · Тестирование</div><h1>Выберите тест</h1><p class="muted">Федеральные авиационные правила. Выберите один из двух комплектов вопросов.</p></div>
  <div class="faps">${["38","178"].map((k,n)=>{const b=BANK[k];return `<button class="fap f${k} rise" style="animation-delay:${.08+n*.08}s" data-fap="${k}" ${A.S[k]&&A.S[k].done?"disabled":""}>${radar()}<span class="go">${ic("arrow-right-bold",22)}</span><div><div class="eyebrow" style="opacity:.8">Федеральные авиационные правила</div><div class="no">№ ${b.no}</div><div class="nm">${b.name}</div></div><div class="meta"><span>${ic("list-numbers",14)} ${b.take||b.qs.length} вопросов</span><span>${ic("timer",14)} ${b.durationMin||40} минут</span>${A.S[k]&&A.S[k].done?`<span>${ic("check-circle",14)} Пройден</span>`:`<span>${ic("repeat-once",14)} 1 попытка</span>`}</div></button>`}).join("")}</div>
  <div class="card rules rise" style="animation-delay:.24s"><div><span class="ri">${ic("timer",20)}</span><span><b>Время</b>Ограничено, таймер виден в тесте</span></div><div><span class="ri">${ic("compass",20)}</span><span><b>Навигация</b>Можно возвращаться к вопросам</span></div><div><span class="ri">${ic("chart-bar",20)}</span><span><b>Результат</b>Ответы проверяет организатор</span></div></div>`;
  $("#A-stageback").onclick=aChoose;
